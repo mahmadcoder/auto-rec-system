@@ -1,0 +1,94 @@
+{
+  "Marketing": {
+    "hero": {
+      "newFeature": "Nueva Función",
+      "aiPowered": "Extracción con IA",
+      "title": "Extrae Datos de Cualquier Sitio Web con",
+      "titleHighlight": "Precisión de IA",
+      "subtitle": "Nuestra tecnología avanzada de IA identifica y extrae automáticamente datos estructurados de cualquier sitio web, haciendo la extracción web más fácil y confiable que nunca.",
+      "startToday": "Comienza Hoy",
+      "benefits": {
+        "noCreditCard": "Sin tarjeta de crédito",
+        "freePlan": "Plan gratuito disponible",
+        "apiAccess": "Acceso completo a la API",
+        "exportFormats": "Múltiples formatos de exportación"
+      },
+      "cta": {
+        "getStarted": "Comenzar",
+        "documentation": "Ver Documentación"
+      },
+      "features": {
+        "structuredData": {
+          "title": "Datos Estructurados",
+          "description": "Extrae datos en un formato limpio y organizado, listo para análisis"
+        },
+        "simpleApi": {
+          "title": "API Simple",
+          "description": "API fácil de usar para una integración perfecta con tus aplicaciones"
+        },
+        "anyWebsite": {
+          "title": "Cualquier Sitio Web",
+          "description": "Funciona con cualquier sitio web, independientemente de su estructura o complejidad"
+        }
+      }
+    },
+    "features": {
+      "title": "Potentes Funciones para tus Necesidades de Extracción",
+      "subtitle": "Todo lo que necesitas para extraer y procesar datos web de manera eficiente",
+      "items": {
+        "dataExtraction": {
+          "title": "Extracción Inteligente",
+          "description": "Extracción impulsada por IA que identifica y captura automáticamente datos relevantes"
+        },
+        "exportFormats": {
+          "title": "Múltiples Formatos",
+          "description": "Exporta tus datos en CSV, JSON, Excel o cualquier formato que necesites"
+        },
+        "developerApi": {
+          "title": "API para Desarrolladores",
+          "description": "Integra la extracción web directamente en tus aplicaciones con nuestra API REST"
+        },
+        "cloudProcessing": {
+          "title": "Procesamiento en la Nube",
+          "description": "Procesa grandes cantidades de datos con nuestra infraestructura escalable"
+        },
+        "monitoring": {
+          "title": "Monitoreo en Tiempo Real",
+          "description": "Rastrea tus trabajos de extracción y recibe notificaciones sobre su estado"
+        },
+        "scheduling": {
+          "title": "Programación Automatizada",
+          "description": "Configura trabajos de extracción recurrentes para mantener tus datos actualizados"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Precios simples y transparentes",
+      "subtitle": "Elige el plan que mejor se adapte a ti",
+      "loading": "Cargando información de precios...",
+      "currentPlan": "Plan Actual",
+      "comingSoon": "Próximamente",
+      "month": "/mes",
+      "features": {
+        "monthlyScrapes": "extracciones mensuales",
+        "urlsPerBatch": "URLs por lote",
+        "pagesPerSite": "páginas por sitio",
+        "concurrentSites": "sitios concurrentes",
+        "monthlyEmails": "correos mensuales",
+        "emailsPerSite": "correos por sitio"
+      },
+      "cta": {
+        "manageSubscription": "Gestionar Suscripción",
+        "getStarted": "Comenzar"
+      },
+      "enterprise": {
+        "description": "¿Necesitas una solución personalizada? Contacta con nuestro equipo de ventas.",
+        "contactSales": "Contactar Ventas"
+      }
+    }
+  },
+  "Common": {
+    "somethingWentWrong": "Algo salió mal",
+    "retry": "Reintentar"
+  }
+} 

@@ -1,0 +1,94 @@
+{
+  "Marketing": {
+    "hero": {
+      "newFeature": "Nouvelle Fonctionnalité",
+      "aiPowered": "Extraction par IA",
+      "title": "Extrayez des Données de Tout Site Web avec",
+      "titleHighlight": "Précision IA",
+      "subtitle": "Notre technologie avancée d'IA identifie et extrait automatiquement des données structurées de n'importe quel site web, rendant l'extraction web plus facile et plus fiable que jamais.",
+      "startToday": "Commencez Aujourd'hui",
+      "benefits": {
+        "noCreditCard": "Pas de carte de crédit requise",
+        "freePlan": "Plan gratuit disponible",
+        "apiAccess": "Accès complet à l'API",
+        "exportFormats": "Multiples formats d'export"
+      },
+      "cta": {
+        "getStarted": "Commencer",
+        "documentation": "Voir la Documentation"
+      },
+      "features": {
+        "structuredData": {
+          "title": "Données Structurées",
+          "description": "Extrayez des données dans un format propre et organisé, prêt pour l'analyse"
+        },
+        "simpleApi": {
+          "title": "API Simple",
+          "description": "API facile à utiliser pour une intégration transparente avec vos applications"
+        },
+        "anyWebsite": {
+          "title": "Tout Site Web",
+          "description": "Fonctionne avec n'importe quel site web, quelle que soit sa structure ou sa complexité"
+        }
+      }
+    },
+    "features": {
+      "title": "Fonctionnalités Puissantes pour vos Besoins d'Extraction",
+      "subtitle": "Tout ce dont vous avez besoin pour extraire et traiter efficacement les données web",
+      "items": {
+        "dataExtraction": {
+          "title": "Extraction Intelligente",
+          "description": "Extraction alimentée par l'IA qui identifie et capture automatiquement les données pertinentes"
+        },
+        "exportFormats": {
+          "title": "Formats Multiples",
+          "description": "Exportez vos données en CSV, JSON, Excel ou tout autre format souhaité"
+        },
+        "developerApi": {
+          "title": "API Développeur",
+          "description": "Intégrez l'extraction web directement dans vos applications avec notre API REST"
+        },
+        "cloudProcessing": {
+          "title": "Traitement Cloud",
+          "description": "Traitez de grandes quantités de données avec notre infrastructure évolutive"
+        },
+        "monitoring": {
+          "title": "Surveillance en Temps Réel",
+          "description": "Suivez vos tâches d'extraction et recevez des notifications sur leur état"
+        },
+        "scheduling": {
+          "title": "Planification Automatisée",
+          "description": "Configurez des tâches d'extraction récurrentes pour maintenir vos données à jour"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Prix simples et transparents",
+      "subtitle": "Choisissez le forfait qui vous convient",
+      "loading": "Chargement des informations tarifaires...",
+      "currentPlan": "Forfait Actuel",
+      "comingSoon": "Bientôt Disponible",
+      "month": "/mois",
+      "features": {
+        "monthlyScrapes": "extractions mensuelles",
+        "urlsPerBatch": "URLs par lot",
+        "pagesPerSite": "pages par site",
+        "concurrentSites": "sites simultanés",
+        "monthlyEmails": "emails mensuels",
+        "emailsPerSite": "emails par site"
+      },
+      "cta": {
+        "manageSubscription": "Gérer l'Abonnement",
+        "getStarted": "Commencer"
+      },
+      "enterprise": {
+        "description": "Besoin d'une solution personnalisée ? Contactez notre équipe commerciale.",
+        "contactSales": "Contacter les Ventes"
+      }
+    }
+  },
+  "Common": {
+    "somethingWentWrong": "Une erreur s'est produite",
+    "retry": "Réessayer"
+  }
+} 

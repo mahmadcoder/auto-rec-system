@@ -1,0 +1,94 @@
+{
+  "Marketing": {
+    "hero": {
+      "newFeature": "New Feature",
+      "aiPowered": "AI-Powered Scraping",
+      "title": "Extract Data from Any Website with",
+      "titleHighlight": "AI Precision",
+      "subtitle": "Our advanced AI technology automatically identifies and extracts structured data from any website, making web scraping easier and more reliable than ever.",
+      "startToday": "Start Scraping Today",
+      "benefits": {
+        "noCreditCard": "No credit card required",
+        "freePlan": "Free plan available",
+        "apiAccess": "Full API access",
+        "exportFormats": "Multiple export formats"
+      },
+      "cta": {
+        "getStarted": "Get Started",
+        "documentation": "View Documentation"
+      },
+      "features": {
+        "structuredData": {
+          "title": "Structured Data",
+          "description": "Extract data in a clean, organized format ready for analysis"
+        },
+        "simpleApi": {
+          "title": "Simple API",
+          "description": "Easy-to-use API for seamless integration with your applications"
+        },
+        "anyWebsite": {
+          "title": "Any Website",
+          "description": "Works with any website, regardless of structure or complexity"
+        }
+      }
+    },
+    "features": {
+      "title": "Powerful Features for Your Scraping Needs",
+      "subtitle": "Everything you need to extract and process web data efficiently",
+      "items": {
+        "dataExtraction": {
+          "title": "Smart Data Extraction",
+          "description": "AI-powered extraction that automatically identifies and captures relevant data"
+        },
+        "exportFormats": {
+          "title": "Multiple Export Formats",
+          "description": "Export your data in CSV, JSON, Excel, or any format you need"
+        },
+        "developerApi": {
+          "title": "Developer API",
+          "description": "Integrate web scraping directly into your applications with our REST API"
+        },
+        "cloudProcessing": {
+          "title": "Cloud Processing",
+          "description": "Process large amounts of data with our scalable cloud infrastructure"
+        },
+        "monitoring": {
+          "title": "Real-time Monitoring",
+          "description": "Track your scraping jobs and receive notifications about their status"
+        },
+        "scheduling": {
+          "title": "Automated Scheduling",
+          "description": "Set up recurring scraping jobs to keep your data up to date"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Simple, transparent pricing",
+      "subtitle": "Choose the plan that's right for you",
+      "loading": "Loading pricing information...",
+      "currentPlan": "Current Plan",
+      "comingSoon": "Coming Soon",
+      "month": "/month",
+      "features": {
+        "monthlyScrapes": "monthly scrapes",
+        "urlsPerBatch": "URLs per batch",
+        "pagesPerSite": "pages per site",
+        "concurrentSites": "concurrent sites",
+        "monthlyEmails": "monthly emails",
+        "emailsPerSite": "emails per site"
+      },
+      "cta": {
+        "manageSubscription": "Manage Subscription",
+        "getStarted": "Get Started"
+      },
+      "enterprise": {
+        "description": "Need a custom solution? Contact our sales team.",
+        "contactSales": "Contact Sales"
+      }
+    }
+  },
+  "Common": {
+    "somethingWentWrong": "Something went wrong",
+    "retry": "Retry"
+  }
+} 
