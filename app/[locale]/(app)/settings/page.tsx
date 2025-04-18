@@ -322,7 +322,7 @@ export default function SettingsPage() {
                     />
                   </div>
                 ) : setting.hasAction ? (
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" className="hover:text-white">
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 ) : (

@@ -235,18 +235,17 @@ export default function CRMIntegrationPage() {
             <h2 className="text-lg font-semibold">Recent Interactions</h2>
           </div>
           <div className="bg-white rounded-md">
+            
             {recentInteractions.map((interaction, index) => (
               <div 
                 key={interaction.id} 
-                className={`flex items-center justify-between p-4 ${
+                className={`grid grid-cols-5 gap-4 p-4 items-center ${
                   index !== recentInteractions.length - 1 ? "border-b border-gray-100" : ""
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="">
-                    <User className="h-4 w-4 text-black" />
-                  </div>
-                  <div className="text-sm font-medium">{interaction.name}</div>
+                  <User className="h-4 w-4 text-black" />
+                  <span className="text-sm font-medium">{interaction.name}</span>
                 </div>
                 <div className="text-sm text-gray-500">
                   {interaction.action}
@@ -283,7 +282,7 @@ export default function CRMIntegrationPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium">Target Audience</label>
               <Select>
-                <SelectTrigger className="w-full rounded-3xl pr-10">
+                <SelectTrigger className="w-full rounded-3xl pr-4">
                   <SelectValue placeholder="Select audience segment" />
                 </SelectTrigger>
                 <SelectContent>

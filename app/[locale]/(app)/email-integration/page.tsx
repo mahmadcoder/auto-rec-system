@@ -24,6 +24,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 export default function EmailIntegrationPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,19 +34,24 @@ export default function EmailIntegrationPage() {
   const [dkimEnabled, setDkimEnabled] = useState(true);
   const [dmarcEnabled, setDmarcEnabled] = useState(true);
   const [unsubscribeEnabled, setUnsubscribeEnabled] = useState(true);
-    const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("smtp");
 
+  const router = useRouter();
 
+  // Navigation tabs data
   const tabItems = [
-    { id: "smtp", label: "SMTP Configuration" },
-    { id: "email-temp", label: "Email Templates" },
-    { id: "delivery-reports", label: "Delivery Reports" },
+    { id: "smtp", label: "SMTP Configuration", href: "/email-integration" },
+    { id: "templates", label: "Email Templates", href: "/email-integration/email-templates" },
+    { id: "reports", label: "Delivery Reports", href: "/email-integration/delivery-reports" }
   ];
 
+  const handleTabClick = (href: string) => {
+    router.push(href);
+  };
 
   return (
     <DashboardShell>
-      <div className="mx-auto space-y-6 p-0 md:p-6 max-w-4xl">
+      <div className="container mx-auto space-y-6 p-0 md:p-6 max-w-4xl">
         {/* Breadcrumb navigation */}
         <div className="flex items-center text-sm font-medium">
           <Link href="/tools" className="text-gray-500 hover:text-gray-700">
@@ -72,7 +78,7 @@ export default function EmailIntegrationPage() {
                       ? "border-b-2 border-black text-black"
                       : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
                   }`}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabClick(tab.href)}
                 >
                   <Circle className={`h-2 w-2 mr-2 ${activeTab === tab.id ? "fill-black" : ""}`} />
                   {tab.label}
@@ -119,7 +125,7 @@ export default function EmailIntegrationPage() {
                   </SelectContent>
                 </Select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                  <ChevronRight className="h-4 w-4 " />
                 </div>
               </div>
             </div>
@@ -133,7 +139,7 @@ export default function EmailIntegrationPage() {
                   className="pr-10 rounded-3xl"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <User className="h-4 w-4 text-gray-400" />
+                  <User className="h-4 w-4 " />
                 </div>
               </div>
             </div>
@@ -192,7 +198,7 @@ export default function EmailIntegrationPage() {
                   className="pr-10 rounded-3xl"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <User className="h-4 w-4 text-gray-400" />
+                  <User className="h-4 w-4 " />
                 </div>
               </div>
             </div>
@@ -206,7 +212,7 @@ export default function EmailIntegrationPage() {
                   className="pr-10 rounded-3xl"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Mail className="h-4 w-4 text-gray-400" />
+                  <Mail className="h-4 w-4 " />
                 </div>
               </div>
             </div>
@@ -220,7 +226,7 @@ export default function EmailIntegrationPage() {
                   className="pr-10 rounded-3xl"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Send className="h-4 w-4 text-gray-400" />
+                    <Send className="h-4 w-4 " />
                 </div>
               </div>
             </div>
@@ -370,7 +376,7 @@ export default function EmailIntegrationPage() {
                   className="pr-10 rounded-3xl"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Mail className="h-4 w-4 text-gray-400" />
+                  <Mail className="h-4 w-4" />
                 </div>
               </div>
             </div>

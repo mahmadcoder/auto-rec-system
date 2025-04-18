@@ -141,10 +141,10 @@ export function MainNav() {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="outline" asChild size="sm" className="transition-transform hover:scale-105">
+              <Button variant="outline" asChild size="sm" className="transition-transform hover:scale-105 hover:text-white">
                 <Link href="/login">Log in</Link>
               </Button>
-              <Button asChild size="sm" className="transition-transform hover:scale-105">
+              <Button asChild size="sm" className="transition-transform hover:scale-105 ">
                 <Link href="/register" >Sign up</Link>
               </Button>
             </>
@@ -206,10 +206,10 @@ export function MainNav() {
                 </>
               ) : (
                 <div className="pt-4 flex flex-col gap-2">
-                  <Button variant="outline" asChild className="w-full">
+                  <Button variant="outline" asChild className="w-full hover:text-white">
                     <Link href="/login">Log in</Link>
                   </Button>
-                  <Button asChild className="w-full">
+                  <Button asChild className="w-full hover:text-white">
                     <Link href="/register">Sign up</Link>
                   </Button>
                 </div>

@@ -212,3 +212,11 @@ body {
   }
 }
 
+/* This hides the default calendar icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+}

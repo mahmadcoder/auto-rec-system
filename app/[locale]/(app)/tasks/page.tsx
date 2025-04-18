@@ -306,13 +306,13 @@
                   </div>
                   <div className="flex items-center gap-6">
                     <div className="flex space-x-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <CircleCheck className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </div>
@@ -348,13 +348,13 @@
                   </div>
                   <div className="flex items-center gap-6">
                     <div className="flex space-x-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <CircleCheck className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </div>
@@ -422,7 +422,7 @@
                     </div>
                   </div>
                   <div>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                       <EyeIcon className="h-4 w-4" />
                     </Button>
                   </div>

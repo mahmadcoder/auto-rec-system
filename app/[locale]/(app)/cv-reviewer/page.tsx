@@ -53,7 +53,8 @@ export default function CVRebrander() {
       value: "Start Now",
       description: "Create new CV rebrand",
       icon: <PlusCircle className="h-4 w-4 text-blue-600" />,
-      buttonText: "Create New"
+      buttonText: "Create New",
+      link: "/cv-reviewer/create-new"
     }
   ];
 
@@ -192,13 +193,25 @@ export default function CVRebrander() {
                   <CardTitle className="text-xs font-medium">{stat.title}</CardTitle>
                   <h3 className="text-2xl font-bold my-2">{stat.value}</h3>
                   <p className="text-xs font-medium mb-3">{stat.description}</p>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="mt-auto text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    {stat.buttonText}
-                  </Button>
+                  {stat.link ? (
+                    <Link href={stat.link}>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="mt-auto text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        {stat.buttonText}
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="mt-auto text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      {stat.buttonText}
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -276,13 +289,13 @@ export default function CVRebrander() {
                       <div className="text-sm text-gray-500">{cv.company}</div>
                     </td>
                     <td className="py-4 pl-3 pr-4 text-right space-x-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <Download className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </td>

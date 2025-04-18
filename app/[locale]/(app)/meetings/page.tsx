@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { Button } from "@/components/ui/button";
@@ -30,15 +30,32 @@ interface Guest {
 type MeetingType = "video" | "in-person" | "phone";
 type MeetingDuration = "15m" | "30m" | "45m" | "1h";
 
+// Added proper types for date and time
+interface DateTimeState {
+  date: string;
+  time: string;
+  formattedDateTime: string | null; // ISO string format for API calls
+}
+
 export default function MeetingsPage() {
+  // Create refs for date and time inputs
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const timeInputRef = useRef<HTMLInputElement>(null);
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [meetingType, setMeetingType] = useState<MeetingType>("video");
   const [meetingDuration, setMeetingDuration] = useState<MeetingDuration>("15m");
   const [meetingTitle, setMeetingTitle] = useState<string>("");
   const [meetingLink, setMeetingLink] = useState<string>("");
   const [meetingDescription, setMeetingDescription] = useState<string>("");
-  const [meetingDate, setMeetingDate] = useState<string>("");
-  const [meetingTime, setMeetingTime] = useState<string>("");
+  
+  // Improved date & time state with proper typing
+  const [dateTime, setDateTime] = useState<DateTimeState>({
+    date: "",
+    time: "",
+    formattedDateTime: null
+  });
+  
   const [guestEmail, setGuestEmail] = useState<string>("");
   
   // Guest data
@@ -64,6 +81,56 @@ export default function MeetingsPage() {
     }, 800);
   }, []);
 
+  // Update formatted date time whenever date or time changes
+  useEffect(() => {
+    if (dateTime.date && dateTime.time) {
+      const dateTimeStr = `${dateTime.date}T${dateTime.time}`;
+      try {
+        // Create a valid ISO string for API calls
+        const dateObj = new Date(dateTimeStr);
+        setDateTime(prev => ({
+          ...prev,
+          formattedDateTime: dateObj.toISOString()
+        }));
+      } catch (error) {
+        // Handle invalid date/time
+        setDateTime(prev => ({
+          ...prev,
+          formattedDateTime: null
+        }));
+      }
+    }
+  }, [dateTime.date, dateTime.time]);
+
+  // Handle date change
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDateTime(prev => ({
+      ...prev,
+      date: e.target.value
+    }));
+  };
+
+  // Handle time change
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDateTime(prev => ({
+      ...prev,
+      time: e.target.value
+    }));
+  };
+
+  // Handle icon clicks to focus the inputs
+  const handleDateIconClick = () => {
+    if (dateInputRef.current) {
+      dateInputRef.current.showPicker();
+    }
+  };
+
+  const handleTimeIconClick = () => {
+    if (timeInputRef.current) {
+      timeInputRef.current.showPicker();
+    }
+  };
+
   const handleAddGuest = () => {
     if (guestEmail.trim()) {
       // In a real app, you'd validate the email and perhaps look up user details
@@ -85,8 +152,25 @@ export default function MeetingsPage() {
 
   const handleSendInvites = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate date and time are provided
+    if (!dateTime.date || !dateTime.time) {
+      alert("Please select both date and time for the meeting");
+      return;
+    }
+    
     // Logic to send meeting invites would go here
+    console.log("Meeting datetime:", dateTime.formattedDateTime);
     alert("Meeting invites sent!");
+  };
+
+  // Get today's date in YYYY-MM-DD format for min date attribute
+  const getTodayString = (): string => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   return (
@@ -231,12 +315,19 @@ export default function MeetingsPage() {
                     <Input
                       id="date"
                       type="date"
-                      value={meetingDate}
-                      onChange={(e) => setMeetingDate(e.target.value)}
+                      value={dateTime.date}
+                      onChange={handleDateChange}
+                      min={getTodayString()} // Prevent selecting dates in the past
                       className="w-full bg-white pr-10"
                       required
+                      aria-label="Meeting date"
+                      onClick={(e) => e.currentTarget.showPicker()}
+                      ref={dateInputRef}
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <div 
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      onClick={handleDateIconClick}
+                    >
                       <Calendar className="h-5 w-5 text-black" />
                     </div>
                   </div>
@@ -249,17 +340,30 @@ export default function MeetingsPage() {
                     <Input
                       id="time"
                       type="time"
-                      value={meetingTime}
-                      onChange={(e) => setMeetingTime(e.target.value)}
+                      value={dateTime.time}
+                      onChange={handleTimeChange}
                       className="w-full bg-white pr-10"
                       required
+                      aria-label="Meeting time"
+                      onClick={(e) => e.currentTarget.showPicker()}
+                      ref={timeInputRef}
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <div 
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                      onClick={handleTimeIconClick}
+                    >
                       <Clock className="h-5 w-5 text-black" />
                     </div>
                   </div>
                 </div>
               </div>
+
+              {/* Preview of selected datetime (optional) */}
+              {dateTime.date && dateTime.time && (
+                <div className="text-sm text-gray-600 mb-4">
+                  Meeting scheduled for: {new Date(`${dateTime.date}T${dateTime.time}`).toLocaleString()}
+                </div>
+              )}
 
               {/* Duration Options */}
               <div className="space-y-2">
@@ -322,7 +426,7 @@ export default function MeetingsPage() {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="rounded-full bg-blue-600 hover:bg-blue-700 text-white mt-3"
+                className="rounded-full bg-blue-600 hover:bg-blue-700 text-white hover:text-white mt-3"
               >
                 Sync Calendar
               </Button>
@@ -353,7 +457,7 @@ export default function MeetingsPage() {
                       type="button"
                       size="icon" 
                       variant="ghost"
-                      className="w-8 h-8 p-0 text-black"
+                      className="w-8 h-8 p-0 hover:text-white"
                       onClick={handleAddGuest}
                     >
                       <UserPlus className="h-5 w-5" />
@@ -369,7 +473,7 @@ export default function MeetingsPage() {
                 </label>
                 <div className="space-y-3">
                   {invitedGuests.map((guest) => (
-                    <div key={guest.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <div key={guest.id} className="flex items-center justify-between p-3 ">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           {guest.avatar && <AvatarImage src={guest.avatar} alt={guest.name} />}
@@ -413,6 +517,7 @@ export default function MeetingsPage() {
               variant="default"
               size="lg"
               className="rounded-3xl bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={!dateTime.date || !dateTime.time} // Disable if date/time not selected
             >
               Send Invites
             </Button>

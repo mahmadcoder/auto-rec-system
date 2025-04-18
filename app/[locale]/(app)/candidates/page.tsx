@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  User, UsersIcon, CheckCircle, Clock, Plus, Search,Users,
+  User, UsersIcon, CheckCircle, Clock, Plus, Search, Users,
   MoreHorizontal, FileText, Download, Upload, Briefcase,
-  Code, Database, MoreVertical, EyeOff, Eye,Link2, BadgeAlert,
+  Code, Database, MoreVertical, EyeOff, Eye, Link2, BadgeAlert,
   Monitor,
   CirclePlus,
   UserPlus,
@@ -23,8 +23,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type EyeStatesType = {
-    [key: number]: boolean;
-  };
+  [key: number]: boolean;
+};
 
 export default function CandidatesPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -149,14 +149,14 @@ export default function CandidatesPage() {
     }, 800);
 
     // Initialize eye states for all candidates
-    const initialEyeStates:EyeStatesType = {};
+    const initialEyeStates: EyeStatesType = {};
     recentCandidates.forEach((_, index) => {
       initialEyeStates[index] = true; // true means eye is open
     });
     setEyeStates(initialEyeStates);
   }, []);
 
-  const toggleEye = (index:any) => {
+  const toggleEye = (index: any) => {
     setEyeStates(prev => ({
       ...prev,
       [index]: !prev[index]
@@ -192,13 +192,24 @@ export default function CandidatesPage() {
                   <CardTitle className="text-xs font-medium">{stat.title}</CardTitle>
                   <h3 className="text-2xl font-bold my-2">{stat.value}</h3>
                   <p className="text-xs font-medium mb-3">{stat.description}</p>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="mt-auto text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    {stat.buttonText}
-                  </Button>
+                  {stat.title === "LINKEDIN IMPORT" ? (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="mt-auto text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white"
+                      asChild
+                    >
+                      <Link href="/candidates/linkedin-import">{stat.buttonText}</Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="mt-auto text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      {stat.buttonText}
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -218,6 +229,7 @@ export default function CandidatesPage() {
             </Button>
           </div>
           <div className="grid gap-6 md:grid-cols-4">
+
             {poolsData.map((pool, index) => (
               <Card key={index} className="rounded-3xl bg-[#1231AA0D] border-0">
                 <CardContent className="p-4">
@@ -228,20 +240,32 @@ export default function CandidatesPage() {
                     <h3 className="text-base font-medium mb-1">{pool.title}</h3>
                     <p className="text-xs font-medium mb-3">{pool.count}</p>
                     <div className="mt-auto w-full flex">
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white mr-2"
-                      >
-                        View Pool
-                      </Button>
+                      {/* Modified Link button for DevOps pool */}
+                      {pool.title === "DevOps" ? (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white mr-2"
+                          asChild
+                        >
+                          <Link href="/candidates/devops-pool">View Pool</Link>
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="text-xs rounded-3xl bg-blue-600 hover:bg-blue-700 text-white mr-2"
+                        >
+                          View Pool
+                        </Button>
+                      )}
                       {index !== 3 && (
                         <Button
                           variant="outline"
                           size="sm"
                           className="text-xs rounded-3xl hover:bg-blue-700 hover:text-white"
                         >
-                          Add Candidates
+                          <Link href="/candidates/add-candidate">Add Candidates</Link>
                         </Button>
                       )}
                       {index === 3 && (
@@ -284,9 +308,9 @@ export default function CandidatesPage() {
                     <AvatarFallback>{candidate.avatar}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-row items-center space-x-4">
-                      <h4 className="text-sm font-medium w-48">{candidate.name}</h4>
-                      <p className="text-xs font-medium w-32">{candidate.position}</p>
-                    </div>
+                    <h4 className="text-sm font-medium w-48">{candidate.name}</h4>
+                    <p className="text-xs font-medium w-32">{candidate.position}</p>
+                  </div>
                 </div>
                 <div className="text-xs font-medium w-1/4 text-center">{candidate.addedDate}</div>
                 <div className="flex items-center gap-1 w-1/6 text-center">
@@ -294,13 +318,13 @@ export default function CandidatesPage() {
                 </div>
                 <div className="flex items-center">
                   <div className="flex space-x-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <UserPlus className="h-4 w-4 fill-black" />
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                      <UserPlus className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8"
+                      className="h-8 w-8 hover:text-white"
                       onClick={() => toggleEye(index)}
                     >
                       {eyeStates[index] ? (
@@ -309,7 +333,7 @@ export default function CandidatesPage() {
                         <EyeOff className="h-4 w-4" />
                       )}
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </div>

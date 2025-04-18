@@ -5,16 +5,26 @@ import { createContext, useContext, useState, useEffect } from "react";
 interface AuthContextType {
   isAuthenticated: boolean;
   isAuthLoading: boolean;
+  user: { name?: string } | null;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   isAuthLoading: true,
+  user: null,
+  logout: () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [user, setUser] = useState<{ name?: string } | null>(null);
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+  };
 
   useEffect(() => {
     // Check authentication status here
@@ -33,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isAuthLoading }}>
+    <AuthContext.Provider value={{ isAuthenticated, isAuthLoading, user, logout }}>
       {children}
     </AuthContext.Provider>
   );

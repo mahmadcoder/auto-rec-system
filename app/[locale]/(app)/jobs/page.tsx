@@ -7,19 +7,30 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  CheckCircle, Clock, Folder, MessageSquare, MoreHorizontal, Plus, 
-  Users, Briefcase, FileText, ClipboardList, Pencil, Mail, Shapes, 
+import {
+  CheckCircle, Clock, Folder, MessageSquare, MoreHorizontal, Plus,
+  Users, Briefcase, FileText, ClipboardList, Pencil, Mail, Shapes,
   Check, Search, MoreVertical, Edit, Trash, FilePlus, FileChartColumn,
-  Copy, Link2
+  Copy, Link2,
+  Circle
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
+ // Tab data
+ const tabItems = [
+  { id: "all-jobs", label: "All Jobs" },
+  { id: "active", label: "Active" }, 
+  { id: "drafts", label: "Drafts" },
+  { id: "closed", label: "Closed" },
+  { id: "archived", label: "Archived" }
+];
+
+
 export default function JobsPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("All Jobs");
+  const [activeTab, setActiveTab] = useState("all-jobs");
 
   useEffect(() => {
     // Simulate loading data
@@ -74,7 +85,7 @@ export default function JobsPage() {
       activeJobs: 12,
       postingType: "Premium",
       connected: true,
-      href: "/linkedin",
+      href: "/jobs/linkedin",
     },
     {
       name: "Indeed",
@@ -107,7 +118,6 @@ export default function JobsPage() {
     },
   ];
 
-  const jobTabs = ["All Jobs", "Active", "Drafts", "Closed", "Archived"];
 
   return (
     <DashboardShell>
@@ -116,7 +126,7 @@ export default function JobsPage() {
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">Jobs Management</h1>
         </div>
-        
+
         {/* Statistics Cards */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {/* Active Jobs Card */}
@@ -128,9 +138,9 @@ export default function JobsPage() {
               <p className="text-sm font-medium text-[#11181C] mb-1">ACTIVE JOBS</p>
               <div className="text-2xl font-bold">24</div>
               <p className="text-xs text-muted-foreground mt-1 mb-3">10 in last 30 days</p>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="text-xs h-8 w-32 rounded-3xl bg-[#1231AA] hover:bg-[#1231AA]/90 text-white"
               >
                 View All
@@ -142,14 +152,14 @@ export default function JobsPage() {
           <Card className="rounded-3xl bg-[#1231AA0D] border-0 p-4">
             <div className="flex flex-col items-start">
               <div className="h-10 w-10 rounded-full bg-[#1231AA0D] flex items-center justify-center mb-2">
-                <FilePlus className="h-5 w-5 text-[#1231AA] fill-[#1231AA]" />
+                <FilePlus className="h-5 w-5 text-[#1231AA] " />
               </div>
               <p className="text-sm font-medium text-muted-foreground mb-1">DRAFT JOBS</p>
               <div className="text-2xl font-bold">8</div>
               <p className="text-xs text-muted-foreground mt-1 mb-3">3 updated recently</p>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="text-xs h-8 w-32 rounded-3xl bg-[#1231AA] hover:bg-[#1231AA]/90 text-white"
               >
                 Edit Drafts
@@ -166,9 +176,9 @@ export default function JobsPage() {
               <p className="text-sm font-medium text-muted-foreground mb-1">TOTAL APPLICANTS</p>
               <div className="text-2xl font-bold">156</div>
               <p className="text-xs text-muted-foreground mt-1 mb-3">35 new this week</p>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="text-xs h-8 w-32 rounded-3xl bg-[#1231AA] hover:bg-[#1231AA]/90 text-white"
               >
                 View Candidates
@@ -180,14 +190,14 @@ export default function JobsPage() {
           <Card className="rounded-3xl bg-[#1231AA0D] border-0 p-4">
             <div className="flex flex-col items-start">
               <div className="h-10 w-10 rounded-full bg-[#1231AA0D] flex items-center justify-center mb-2">
-                <FileChartColumn className="h-5 w-5 text-[#1231AA] fill-[#1231AA]" />
+                <FileChartColumn className="h-5 w-5 text-[#1231AA]" />
               </div>
               <p className="text-sm font-medium text-muted-foreground mb-1">CONVERSION RATE</p>
               <div className="text-2xl font-bold">18%</div>
               <p className="text-xs text-muted-foreground mt-1 mb-3">+3% from last month</p>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="text-xs h-8 w-32 rounded-3xl bg-[#1231AA] hover:bg-[#1231AA]/90 text-white"
               >
                 View Analytics
@@ -208,36 +218,36 @@ export default function JobsPage() {
               <Search className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
             </div>
           </div>
-          <Button 
-            variant="default" 
-            size="default" 
-            className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
-          >
-            <Plus className="mr-2 h-4 w-4" /> Create New Job
-          </Button>
+          <Link href="/jobs/create-new-job">
+            <Button
+              variant="default"
+              size="default"
+              className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
+            >
+              <Plus className="mr-2 h-4 w-4" /> Create New Job
+            </Button>
+          </Link>
         </div>
 
-        {/* Job Tabs */}
-        <div className="border-b">
-          <div className="flex gap-4 overflow-x-auto">
-            {jobTabs.map((tab) => (
-              <div key={tab} className="relative">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={`text-sm rounded-lg font-medium px-3 py-1 ${activeTab === tab ? 'text-blue-700' : ''}`}
-                  onClick={() => setActiveTab(tab)}
+        {/* Custom Tab Navigation */}
+        <div className="border-b border-gray-200">
+            <nav className="flex space-x-8">
+              {tabItems.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`flex items-center py-4 px-1 text-sm font-medium ${
+                    activeTab === tab.id
+                      ? "border-b-2 border-black text-black"
+                      : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                  onClick={() => setActiveTab(tab.id)}
                 >
-                  <span className={`mr-1 inline-block h-2 w-2 rounded-full ${activeTab === tab ? 'bg-blue-700' : 'bg-gray-300'}`}></span>
-                  {tab}
-                </Button>
-                {activeTab === tab && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-700"></div>
-                )}
-              </div>
-            ))}
+                  <Circle className={`h-2 w-2 mr-2 ${activeTab === tab.id ? "fill-black" : ""}`} />
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
           </div>
-        </div>
 
         {/* Job Listings */}
         <div className="space-y-4">
@@ -252,7 +262,7 @@ export default function JobsPage() {
                     <Briefcase className="h-4 w-4 text-[#000000] fill-[#000000]" />
                   </div>
                   <div>
-                  <div className="flex flex-row items-center space-x-4">
+                    <div className="flex flex-row items-center space-x-4">
                       <h4 className="text-sm font-medium w-48">{job.title}</h4>
                       <p className="text-xs text-muted-foreground w-32">{job.company}</p>
                     </div>
@@ -260,18 +270,18 @@ export default function JobsPage() {
                 </div>
                 <div className="text-xs text-muted-foreground w-1/4 text-center">{job.postedDate}</div>
                 <div className="flex items-center gap-1 w-1/6 text-center">
-                  
+
                   <span className="text-xs font-medium">{job.candidates} candidates</span>
                 </div>
                 <div className="flex space-x-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 ">
-                  <Users className="h-4 w-4 text-[#000000] fill-[#000000]" />        
-                 </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <Edit className="h-4 w-4 text-[#000000] fill-[#000000]" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                    <Users className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-4 w-4 text-[#000000] fill-[#000000]" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                    <MoreVertical className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -301,25 +311,26 @@ export default function JobsPage() {
                   <div className="mt-4 flex gap-2">
                     {integration.connected ? (
                       <>
-                        <Button 
-                          variant="default" 
-                          size="sm" 
+                        <Button
+                          variant="default"
+                          size="sm"
                           className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
+                          onClick={() => window.location.href = integration.href || '#'}
                         >
                           Manage
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="text-xs rounded-3xl text-[#1231AA] hover:bg-[#1231AA]/90 hover:text-[#ffff]"
                         >
                           Disconnect
                         </Button>
                       </>
                     ) : (
-                      <Button 
-                        variant="default" 
-                        size="sm" 
+                      <Button
+                        variant="default"
+                        size="sm"
                         className="text-xs bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
                       >
                         Connect
@@ -350,13 +361,13 @@ export default function JobsPage() {
                   </div>
                 </div>
                 <div className="flex space-x-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <Edit className="h-4 w-4 text-[#000000] fill-[#000000]" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                    <Edit className="h-4 w-4 " />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <Trash className="h-4 w-4 text-[#000000] fill-[#000000]" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                    <Trash className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                     <Copy className="h-4 w-4" />
                   </Button>
                 </div>
@@ -364,9 +375,9 @@ export default function JobsPage() {
             ))}
           </div>
           <div className="pt-2">
-            <Button 
-              variant="default" 
-              size="default" 
+            <Button
+              variant="default"
+              size="default"
               className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
             >
               <Plus className="mr-2 h-4 w-4" /> Create New Template

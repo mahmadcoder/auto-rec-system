@@ -89,7 +89,7 @@
 //           heading="Dashboard"
 //           text="Overview of your web scraping activities"
 //         />
-        
+
 //         {isLoading ? (
 //           <LoadingState />
 //         ) : (
@@ -181,7 +181,7 @@
 //           heading="Dashboard"
 //           text="Overview of your web scraping activities"
 //         />
-        
+
 //         {!isLoading && hasSubscription === false && (
 //           <Card className="mb-6 border-dashed border-2 border-muted-foreground/20">
 //             <CardHeader>
@@ -234,13 +234,25 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Clock, Folder, MessageSquare, MoreVertical, Plus, Users, Briefcase, FileText, ClipboardList, Pencil, Mail, Shapes, Check } from "lucide-react";
+import { CheckCircle, Clock, Folder, MessageSquare, MoreVertical, Plus, Users, Briefcase, FileText, ClipboardList, Pencil, Mail, Shapes, Check, Circle } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
+// Tab data
+const tabItems = [
+  { id: "all-candidates", label: "All Candidates" },
+  { id: "shortlisted", label: "Shortlisted" },
+  { id: "interviewing", label: "Interviewing" },
+  { id: "offer  ", label: "Offer" },
+  { id: "hired", label: "Hired" },
+  { id: "rejected", label: "Rejected" }
+];
+
+
+
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("All Candidates");
+  const [activeTab, setActiveTab] = useState("all-candidates");
 
   useEffect(() => {
     // Simulate loading data
@@ -316,8 +328,8 @@ export default function DashboardPage() {
   ];
 
   // Function to get the appropriate icon for task types
-  const getTaskIcon = (type:any) => {
-    switch(type) {
+  const getTaskIcon = (type: any) => {
+    switch (type) {
       case "document":
         return <FileText className="h-5 w-5 text-blue-600" />;
       case "meeting":
@@ -329,7 +341,7 @@ export default function DashboardPage() {
     }
   };
 
-  const candidateTabs = ["All Candidates", "Shortlisted", "Interviewing", "Offer", "Hired", "Rejected"];
+
 
   return (
     <DashboardShell>
@@ -338,7 +350,7 @@ export default function DashboardPage() {
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">Recruitment Dashboard</h1>
         </div>
-        
+
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {/* Active Jobs Card */}
           <Card className="rounded-3xl bg-[#1231AA0D] border-0 p-4">
@@ -349,9 +361,9 @@ export default function DashboardPage() {
               <p className="text-sm font-medium text-[#11181C] mb-1">ACTIVE JOBS</p>
               <div className="text-2xl font-bold">24</div>
               <p className="text-xs text-muted-foreground mt-1 mb-3">10 in last 30 days</p>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="text-xs h-8 w-32 rounded-3xl bg-[#1231AA] hover:bg-[#1231AA]/90 text-white"
                 asChild
               >
@@ -369,9 +381,9 @@ export default function DashboardPage() {
               <p className="text-sm font-medium text-muted-foreground mb-1">CANDIDATES</p>
               <div className="text-2xl font-bold">158</div>
               <p className="text-xs text-muted-foreground mt-1 mb-3">25 new this month</p>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="text-xs h-8 w-32 rounded-3xl bg-[#1231AA] hover:bg-[#1231AA]/90 text-white"
                 asChild
               >
@@ -389,9 +401,9 @@ export default function DashboardPage() {
               <p className="text-sm font-medium text-muted-foreground mb-1">PENDING TASKS</p>
               <div className="text-2xl font-bold">18</div>
               <p className="text-xs text-muted-foreground mt-1 mb-3">5 high priority</p>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="text-xs h-8 w-32 rounded-3xl bg-[#1231AA] hover:bg-[#1231AA]/90 text-white"
                 asChild
               >
@@ -409,9 +421,9 @@ export default function DashboardPage() {
               <p className="text-sm font-medium text-muted-foreground mb-1">CV REVIEWING</p>
               <div className="text-2xl font-bold">32</div>
               <p className="text-xs text-muted-foreground mt-1 mb-3">10 completed today</p>
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="text-xs h-8 w-32 rounded-3xl bg-[#1231AA] hover:bg-[#1231AA]/90 text-white"
               >
                 Review Now
@@ -439,14 +451,23 @@ export default function DashboardPage() {
                       <p className="text-xs text-muted-foreground w-32">{job.company}</p>
                     </div>
                   </div>
+                  <div className="text-xs text-muted-foreground">{job.postedDate}</div>
+                  <div className="text-xs font-medium ml-6 mr-6">{job.candidates} candidates</div>
                   <div className="flex items-center">
-                    <div className="text-xs text-muted-foreground">{job.postedDate}</div>
-                    <div className="text-xs font-medium ml-6 mr-6">{job.candidates} candidates</div>
                     <div className="flex ml-auto space-x-2">
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <Pencil className="h-4 w-4 text-[#000000] fill-[#000000]" />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:text-white"
+                      >
+                        <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:text-white"
+                      >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </div>
@@ -455,9 +476,9 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="p-6 pt-2">
-              <Button 
-                variant="default" 
-                size="sm" 
+              <Button
+                variant="default"
+                size="sm"
                 className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
               >
                 Create New Job
@@ -470,26 +491,26 @@ export default function DashboardPage() {
             <div className="p-6 pb-3">
               <h2 className="text-lg font-semibold">Candidate Pipeline</h2>
             </div>
-            <div className="border-b px-6 py-2">
-              <div className="flex gap-4 overflow-x-auto pb-1">
-                {candidateTabs.map((tab) => (
-                  <div key={tab} className="relative">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className={`text-xs rounded-lg font-medium px-3 ${activeTab === tab ? 'bg-blue-50 text-blue-700' : ''}`}
-                      onClick={() => setActiveTab(tab)}
-                    >
-                      <span className={`mr-1 inline-block h-2 w-2 rounded-full ${activeTab === tab ? 'bg-blue-700' : 'bg-gray-300'}`}></span>
-                      {tab}
-                    </Button>
-                    {activeTab === tab && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-700"></div>
-                    )}
-                  </div>
+
+            {/* Custom Tab Navigation */}
+            <div className="border-b border-gray-200">
+              <nav className="flex space-x-8">
+                {tabItems.map((tab) => (
+                  <button
+                    key={tab.id}
+                    className={`flex items-center py-4 px-1 text-sm font-medium ${activeTab === tab.id
+                      ? "border-b-2 border-black text-black"
+                      : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      }`}
+                    onClick={() => setActiveTab(tab.id)}
+                  >
+                    <Circle className={`h-2 w-2 mr-2 ${activeTab === tab.id ? "fill-black" : ""}`} />
+                    {tab.label}
+                  </button>
                 ))}
-              </div>
+              </nav>
             </div>
+
             <div>
               {candidates.map((candidate, index) => (
                 <div key={index} className="flex items-center justify-between py-4 px-6">
@@ -505,13 +526,13 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Mail className="h-4 w-4 text-[#000000] fill-[#000000]" />
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                      <Mail className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Shapes className="h-4 w-4 text-[#000000] fill-[#000000]" />
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                      <Shapes className="h-4 w-4 " />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </div>
@@ -519,9 +540,9 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="p-6 pt-2">
-              <Button 
-                variant="default" 
-                size="lg" 
+              <Button
+                variant="default"
+                size="lg"
                 className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
               >
                 View All Candidates
@@ -548,16 +569,20 @@ export default function DashboardPage() {
                       <p className="text-xs text-muted-foreground">{task.info}</p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-[#000000] flex items-center justify-center mb-2">
-                    <Check className="h-6 w-6 text-[#fff]" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-full bg-[#000000] flex items-center justify-center mb-2"
+                  >
+                    <Check className="h-4 w-4 text-white" />
                   </Button>
                 </div>
               ))}
             </div>
             <div className="p-6 pt-2">
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
               >
                 Create New Task

@@ -345,13 +345,13 @@ export default function JobBoardsPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-black">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                                         <Edit className="h-4 w-4" />
                                     </Button>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-black">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                                         <RefreshCcw className="h-4 w-4" />
                                     </Button>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-black">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                                         <MoreVertical className="h-4 w-4" />
                                     </Button>
                                 </div>
@@ -422,13 +422,13 @@ export default function JobBoardsPage() {
                                     <div className="text-xs font-medium">{job.applications}</div>
                                 <div className="flex items-center gap-6">
                                     <div className="flex space-x-1">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-black">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                                             <Edit className="h-4 w-4" />
                                         </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-black">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                                             <Eye className="h-4 w-4" />
                                         </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-black">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                                             <MoreVertical className="h-4 w-4" />
                                         </Button>
                                     </div>

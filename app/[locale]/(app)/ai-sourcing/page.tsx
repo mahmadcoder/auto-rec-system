@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Plus, Shapes, MoreVertical, Edit, User, TrendingUp, RefreshCcw,
-  Eye, EyeOff, BookmarkIcon, Loader2, ExternalLink
+  Eye, EyeOff, BookmarkIcon, Loader2, ExternalLink,
+  Circle
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +44,13 @@ export default function AISourcePage() {
     }));
   };
 
-  const tabs = ["Overview", "Data Sources", "Recommendations", "Settings"];
+  // Tab data
+  const tabItems = [
+    { id: "overview", label: "Overview" },
+    { id: "data-source", label: "Data Source" },
+    { id: "recommendations", label: "Recommendations" },
+    { id: "settings", label: "Settings" }
+  ];
 
   // Define the candidate type
   type Candidate = {
@@ -169,26 +176,25 @@ export default function AISourcePage() {
           </p>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="border-b">
-          <div className="flex gap-4 overflow-x-auto">
-            {tabs.map((tab) => (
-              <div key={tab} className="relative">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`text-sm rounded-lg font-medium px-3 py-1 ${activeTab === tab ? 'text-blue-700' : ''}`}
-                  onClick={() => setActiveTab(tab)}
+        {/* Custom Tab Navigation */}
+        <div className="border-b border-gray-200">
+            <nav className="flex space-x-8">
+              {tabItems.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`flex items-center py-4 px-1 text-sm font-medium ${
+                    activeTab === tab.id
+                      ? "border-b-2 border-black text-black"
+                      : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                  onClick={() => setActiveTab(tab.id)}
                 >
-                  {tab}
-                </Button>
-                {activeTab === tab && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-700"></div>
-                )}
-              </div>
-            ))}
+                  <Circle className={`h-2 w-2 mr-2 ${activeTab === tab.id ? "fill-black" : ""}`} />
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
           </div>
-        </div>
 
         {/* Statistics Cards */}
         <div className="grid gap-6 md:grid-cols-3">
@@ -396,7 +402,7 @@ export default function AISourcePage() {
                   onChange={(e) => setSourcingPreferences({ ...sourcingPreferences, skillsPriority: e.target.value })}
                   className="pr-8 rounded-3xl"
                 />
-                <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-1 top-0">
+                <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-1 top-0 hover:text-white">
                   <Edit className="h-4 w-4" />
                 </Button>
               </div>
@@ -413,7 +419,7 @@ export default function AISourcePage() {
                   onChange={(e) => setSourcingPreferences({ ...sourcingPreferences, experienceLevel: e.target.value })}
                   className="pr-8 rounded-3xl"
                 />
-                <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-1 top-0">
+                <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-1 top-0 hover:text-white">
                   <Edit className="h-4 w-4" />
                 </Button>
               </div>
@@ -430,7 +436,7 @@ export default function AISourcePage() {
                   onChange={(e) => setSourcingPreferences({ ...sourcingPreferences, locationPreferences: e.target.value })}
                   className="pr-8 rounded-3xl"
                 />
-                <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-1 top-0">
+                <Button variant="ghost" size="icon" className="h-8 w-8 absolute right-1 top-0 hover:text-white">
                   <Edit className="h-4 w-4 " />
                 </Button>
               </div>

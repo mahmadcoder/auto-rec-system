@@ -164,7 +164,7 @@ export function PricingSection() {
           <p className="text-base text-muted-foreground">
             {t("enterprise.description")}
           </p>
-          <Button asChild variant="outline" className="mt-6">
+          <Button asChild variant="outline" className="mt-6 hover:text-white">
             <Link href="/contact">{t("enterprise.contactSales")}</Link>
           </Button>
         </div>

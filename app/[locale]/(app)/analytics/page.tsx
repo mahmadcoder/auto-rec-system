@@ -325,10 +325,10 @@ export default function AnalyticsPage() {
 
                 {/* analytical section */}
                 <div className="flex items-center gap-4">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-black">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                     <BarChart3 className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-black">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </div>
@@ -350,34 +350,34 @@ export default function AnalyticsPage() {
                 key={job.id} 
                 className="flex items-center justify-between p-4 "
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-1/4">
                     <Briefcase className="h-4 w-4 text-black" />
                   <div className="text-sm font-medium">{job.title}</div>
                 </div>
-                <div className="flex flex-row space-x-4 items-center gap-6 ">
-                  <div className="text-xs font-medium">{job.applications} applications</div>
-                  <div className="text-xs font-medium">{job.interviews} interviews</div>
-                  <div className="text-xs font-medium">{job.offers} offer{job.offers > 1 ? 's' : ''}</div>
+                <div className="flex justify-between w-1/2 space-x-16">
+                  <div className="w-32 text-xs font-medium text-right">{job.applications} applications</div>
+                  <div className="w-24 text-xs font-medium text-right">{job.interviews} interviews</div>
+                  <div className="w-16 text-xs font-medium text-right">{job.offers} offer{job.offers > 1 ? 's' : ''}</div>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 w-1/4 justify-end">
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-6 w-6 text-black "
+                    className="h-8 w-8 hover:text-white"
                   >
                     <BarChart3 className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-6 w-6 text-black"
+                    className="h-8 w-8 hover:text-white"
                   >
                     <TrendingUp className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-6 w-6 text-black"
+                    className="h-8 w-8 hover:text-white"
                   >
                     <MoreVertical className="h-4 w-4" />
                   </Button>
@@ -423,14 +423,14 @@ export default function AnalyticsPage() {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-8 w-8 text-black"
+                    className="h-8 w-8 hover:text-white"
                   >
                     <BarChart3 className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-8 w-8 text-black"
+                    className="h-8 w-8 hover:text-white"
                   >
                     <MoreVertical className="h-4 w-4" />
                   </Button>
