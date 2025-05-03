@@ -388,3 +388,44 @@ export default function JobsPage() {
     </DashboardShell>
   );
 }
+
+
+
+
+
+// In your jobs/page.tsx
+// const JobsPage = async () => {
+//   const response = await fetch('/api/jobs');
+//   const jobs = await response.json();
+
+//   return (
+//     <div className="container mx-auto px-4 py-6">
+//       <div className="flex justify-between items-center mb-6">
+//         <h1 className="text-2xl font-bold">My Jobs</h1>
+//         <Link href="/jobs/create-new-job">
+//           <Button>Create New Job</Button>
+//         </Link>
+//       </div>
+
+//       <div className="grid gap-4">
+//         {jobs.map((job) => (
+//           <div key={job.id} className="border rounded-lg p-4">
+//             <h2 className="text-xl font-semibold">{job.jobTitle}</h2>
+//             <p className="text-gray-600">{job.location} • {job.employmentType}</p>
+//             <p className="text-gray-600">{job.salaryRange}</p>
+//             <div className="mt-2">
+//               {job.requiredSkills.map((skill) => (
+//                 <span key={skill} className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+//                   {skill}
+//                 </span>
+//               ))}
+//             </div>
+//             <div className="mt-4">
+//               <Badge>{job.status}</Badge>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };

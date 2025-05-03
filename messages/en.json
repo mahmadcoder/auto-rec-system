@@ -1,0 +1,29 @@
+{
+  "Auth": {
+    "welcomeBack": "Welcome back",
+    "enterCredentials": "Enter your credentials to sign in",
+    "createAccount": "Create an account",
+    "enterDetails": "Enter your details to get started",
+    "email": "Email",
+    "emailPlaceholder": "john@example.com",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "namePlaceholder": "John Doe",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signingIn": "Signing in...",
+    "creatingAccount": "Creating account...",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "orContinueWith": "or continue with",
+    "agreement": "By continuing, you agree to our",
+    "terms": "Terms of Service",
+    "and": "and",
+    "privacy": "Privacy Policy",
+    "accountCreated": "Account created successfully",
+    "signedIn": "Signed in successfully",
+    "errorOccurred": "Something went wrong"
+  }
+} 

@@ -15,6 +15,7 @@ import {
   Briefcase, 
   Users
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Tab items for job description section
 const descriptionTabItems = [
@@ -39,6 +40,8 @@ export default function CreateNewJobPage() {
   // Active tab state
   const [activeDescriptionTab, setActiveDescriptionTab] = useState("write-description");
 
+  const router = useRouter();
+
   // Input change handler
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -54,6 +57,39 @@ export default function CreateNewJobPage() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const response = await fetch('/api/jobs', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        jobTitle: formData.jobTitle,
+        category: formData.category,
+        location: formData.location,
+        employmentType: formData.employmentType,
+        salaryRange: formData.salaryRange,
+        jobDescription: formData.jobDescription,
+        requiredSkills: formData.requiredSkills.split(',').map(skill => skill.trim()),
+        requiredExperience: formData.requiredExperience,
+        postToLinkedIn: false, // Get from your switches
+        postToIndeed: false,
+        postToGlassdoor: false,
+        postToMonster: false,
+        enableAIMatching: false,
+        searchExistingPool: false,
+        status: 'draft' // or 'published' based on which button was clicked
+      })
+    });
+
+    if (response.ok) {
+      // Redirect to jobs list or show success message
+      router.push('/jobs');
+    }
   };
 
   return (
@@ -322,7 +358,7 @@ export default function CreateNewJobPage() {
             </div>
           </div>
         </div>
-
+              
         {/* Action Buttons */}
         <div className="flex justify-end space-x-4 pt-6">
           <Button variant="outline" className="rounded-3xl text-black hover:bg-[#1231AA] hover:text-white">Save as Draft</Button>

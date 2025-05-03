@@ -1,189 +1,3 @@
-// "use client";
-
-// import Link from "next/link";
-// import { usePathname } from "next/navigation";
-// import { cn } from "@/lib/utils";
-// import { Button } from "@/components/ui/button";
-// import { ScrollArea } from "@/components/ui/scroll-area";
-// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-// import {
-//   BarChart,
-//   Database,
-//   FileSpreadsheet,
-//   Home,
-//   Menu,
-//   Settings,
-//   LogOut,
-//   User,
-// } from "lucide-react";
-// import Image from "next/image";
-// import { ThemeToggle } from "@/components/theme-toggle";
-// import { Logo } from "@/components/ui/logo";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-// import { useAuth } from "@/contexts/auth-context";
-
-// const sidebarNavItems = [
-//   {
-//     title: "Dashboard",
-//     href: "/dashboard",
-//     icon: Home,
-//   },
-//   {
-//     title: "Clients",
-//     href: "/clients",
-//     icon: Database,
-//   },
-//   {
-//     title: "AI Sourcing",
-//     href: "/ai-sourcing",
-//     icon: User,
-//   },
-//   {
-//     title: "Results",
-//     href: "/results",
-//     icon: FileSpreadsheet,
-//   },
-//   {
-//     title: "Analytics",
-//     href: "/analytics",
-//     icon: BarChart,
-//   },
-//   {
-//     title: "Settings",
-//     href: "/settings",
-//     icon: Settings,
-//   },
-// ];
-
-// export function Sidebar() {
-//   const pathname = usePathname();
-
-//   return (
-//     <>
-//       <Sheet>
-//         <SheetTrigger asChild>
-//           <Button
-//             variant="outline"
-//             size="icon"
-//             className="md:hidden fixed left-4 top-4 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-//           >
-//             <Menu className="h-5 w-5" />
-//           </Button>
-//         </SheetTrigger>
-//         <SheetContent
-//           side="left"
-//           className="w-[280px] p-0 bg-background border-r"
-//         >
-//           <SidebarContent pathname={pathname} />
-//         </SheetContent>
-//       </Sheet>
-
-//       <aside className="hidden md:flex fixed left-0 top-0 z-30 h-screen w-[280px] flex-col bg-background border-r">
-//         <SidebarContent pathname={pathname} />
-//       </aside>
-//     </>
-//   );
-// }
-
-// function SidebarContent({ pathname }: { pathname: string }) {
-//   const { user, logout } = useAuth();
-
-//   // Generate initials from user name
-//   const getInitials = (name: string | undefined) => {
-//     if (!name) return "AU";
-
-//     const names = name.split(" ");
-//     if (names.length === 1) return names[0].substring(0, 2).toUpperCase();
-//     return (names[0][0] + names[names.length - 1][0]).toUpperCase();
-//   };
-
-//   return (
-//     <div className="flex h-full flex-col">
-//       <div className="flex h-[70px] items-center justify-between border-b px-7 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-//         <Link href="/" className="flex items-center gap-2">
-//           <Logo />
-//         </Link>
-//         <div className="flex items-center gap-2">
-//           <ThemeToggle />
-
-//           <DropdownMenu>
-//             <DropdownMenuTrigger asChild>
-//               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-//                 <Avatar className="h-9 w-9">
-//                   <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
-//                 </Avatar>
-//               </Button>
-//             </DropdownMenuTrigger>
-//             <DropdownMenuContent align="end">
-//               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-//               <DropdownMenuSeparator />
-//               <DropdownMenuItem asChild>
-//                 <Link href="/profile" className="cursor-pointer flex w-full items-center">
-//                   <User className="mr-2 h-4 w-4" />
-//                   <span>Profile</span>
-//                 </Link>
-//               </DropdownMenuItem>
-//               <DropdownMenuSeparator />
-//               <DropdownMenuItem 
-//                 onClick={logout} 
-//                 className="cursor-pointer text-red-500 focus:text-red-500"
-//               >
-//                 <LogOut className="mr-2 h-4 w-4" />
-//                 <span>Logout</span>
-//               </DropdownMenuItem>
-//             </DropdownMenuContent>
-//           </DropdownMenu>
-//         </div>
-//       </div>
-
-//       <ScrollArea className="flex-1 py-8">
-//         <nav className="grid gap-2 px-4">
-//           {sidebarNavItems.map((item) => (
-//             <Button
-//               key={item.href}
-//               asChild
-//               variant={pathname === item.href ? "default" : "ghost"}
-//               className={cn(
-//                 "w-full justify-start transition-all duration-200 h-11",
-//                 pathname === item.href
-//                   ? "bg-primary text-primary-foreground font-medium shadow-md"
-//                   : "text-foreground hover:text-primary hover:bg-muted/80"
-//               )}
-//             >
-//               <Link href={item.href} className="flex items-center gap-4">
-//                 <item.icon
-//                   className={cn(
-//                     "h-[18px] w-[18px]",
-//                     pathname === item.href
-//                       ? "text-primary-foreground"
-//                       : "text-foreground"
-//                   )}
-//                 />
-//                 <span className="font-medium">{item.title}</span>
-//               </Link>
-//             </Button>
-//           ))}
-//         </nav>
-//       </ScrollArea>
-
-//       <div className="border-t p-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-//         <p className="text-sm text-foreground/80 text-center font-medium">
-//           © 2025 Autorec AI
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 "use client";
 
 import Link from "next/link";
@@ -218,7 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/components/providers/auth-provider";
 
 // Divide navigation items into main items and tools
 const mainNavItems = [
@@ -320,13 +134,23 @@ export function Sidebar() {
 function SidebarContent({ pathname }: { pathname: string }) {
   const { user, logout } = useAuth();
 
-  type ExtendedUser = typeof user & { profileImage?: string };
+  type ExtendedUser = {
+    id: string;
+    email: string;
+    name?: string;
+    profileImage?: string;
+    subscription?: {
+      status: 'active' | 'inactive' | 'trial';
+      plan?: string;
+    };
+  };
   const extendedUser = user as ExtendedUser;
-  // Generate initials from user name
+  
+  // Generate initials from user name - Fixed function
   const getInitials = (name: string | undefined) => {
-    if (!name) return "AU";
+    if (!name || name.trim() === "") return ""; // Handle empty name
 
-    const names = name.split(" ");
+    const names = name.trim().split(" ");
     if (names.length === 1) return names[0].substring(0, 2).toUpperCase();
     return (names[0][0] + names[names.length - 1][0]).toUpperCase();
   };
@@ -339,34 +163,6 @@ function SidebarContent({ pathname }: { pathname: string }) {
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-9 w-9">
-                  <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/profile" className="cursor-pointer flex w-full items-center">
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={logout}
-                className="cursor-pointer text-red-500 focus:text-red-500"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Logout</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
 
@@ -445,19 +241,58 @@ function SidebarContent({ pathname }: { pathname: string }) {
         </nav>
       </ScrollArea>
 
-      <div className="border-t p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between">
-        {/* User profile in bottom left */}
-        <div className="flex items-center gap-2">
-        <Avatar className="h-8 w-8">
-    {extendedUser?.profileImage ? (
-      <AvatarImage src={extendedUser.profileImage} alt={extendedUser?.name || "User"} />
-    ) : (
-      <AvatarFallback>{getInitials(extendedUser?.name)}</AvatarFallback>
-    )}
-  </Avatar>
-          
-        </div>
-        
+      <div className="border-t p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              variant="ghost" 
+              className="w-auto p-0 h-auto hover:bg-transparent transition-transform duration-200 hover:scale-105"
+            >
+              <div className="flex items-center">
+                <Avatar className="h-11 w-11 border-[1.5px] border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-200">
+                  {extendedUser?.profileImage ? (
+                    <AvatarImage src={extendedUser.profileImage} alt={extendedUser?.name || ""} />
+                  ) : (
+                    <AvatarFallback className="bg-blue-600">
+                      <span className="text-base font-medium text-white">
+                        {getInitials(extendedUser?.name) || "U"}
+                      </span>
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+              </div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[240px]">
+            <DropdownMenuLabel>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{extendedUser?.name}</span>
+                <span className="text-xs text-muted-foreground">{extendedUser?.email}</span>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/profile" className="cursor-pointer flex w-full items-center">
+                <FileText className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={async () => {
+                try {
+                  await logout();
+                } catch (error) {
+                  console.error('Logout failed:', error);
+                }
+              }}
+              className="cursor-pointer text-red-500 focus:text-red-500"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

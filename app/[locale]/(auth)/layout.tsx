@@ -1,6 +1,5 @@
 import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
 
 export const metadata = {
   title: "Authentication - Autorec",
@@ -12,8 +11,6 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const t = useTranslations("Auth");
-  
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md space-y-8">
@@ -24,19 +21,19 @@ export default function AuthLayout({
         {children}
         
         <p className="text-center text-sm text-muted-foreground">
-          {t("agreement")}{" "}
+          By continuing, you agree to our{" "}
           <Link
             href="/terms-of-service"
             className="font-medium hover:text-primary underline underline-offset-4"
           >
-            {t("terms")}
+            Terms of Service
           </Link>{" "}
-          {t("and")}{" "}
+          and{" "}
           <Link
             href="/privacy-policy"
             className="font-medium hover:text-primary underline underline-offset-4"
           >
-            {t("privacy")}
+            Privacy Policy
           </Link>
         </p>
       </div>

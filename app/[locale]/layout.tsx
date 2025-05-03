@@ -4,7 +4,7 @@ import { Inter as FontSans } from "next/font/google";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -52,7 +52,7 @@ export default async function RootLayout({
           >
             <AuthProvider>
               <TooltipProvider>{children}</TooltipProvider>
-              <Toaster />
+              <Toaster position="bottom-center" />
             </AuthProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

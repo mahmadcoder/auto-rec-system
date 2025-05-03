@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { usePathname } from "next/navigation";
 import { LogOut, Menu, User, X } from "lucide-react";
 
@@ -126,7 +126,6 @@ export function MainNav() {
                   <Link href="/profile" className="flex items-center">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
-                    
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -142,10 +141,10 @@ export function MainNav() {
           ) : (
             <>
               <Button variant="outline" asChild size="sm" className="transition-transform hover:scale-105 hover:text-white">
-                <Link href="/login">Log in</Link>
+                <Link href="/signin">Log in</Link>
               </Button>
-              <Button asChild size="sm" className="transition-transform hover:scale-105 ">
-                <Link href="/register" >Sign up</Link>
+              <Button asChild size="sm" className="transition-transform hover:scale-105">
+                <Link href="/signup">Sign up</Link>
               </Button>
             </>
           )}
@@ -207,10 +206,10 @@ export function MainNav() {
               ) : (
                 <div className="pt-4 flex flex-col gap-2">
                   <Button variant="outline" asChild className="w-full hover:text-white">
-                    <Link href="/login">Log in</Link>
+                    <Link href="/signin">Log in</Link>
                   </Button>
                   <Button asChild className="w-full hover:text-white">
-                    <Link href="/register">Sign up</Link>
+                    <Link href="/signup">Sign up</Link>
                   </Button>
                 </div>
               )}
