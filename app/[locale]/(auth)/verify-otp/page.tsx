@@ -225,7 +225,7 @@ export default function VerifyOTPPage() {
           )}
         </p>
         <p className="mt-2">
-          <Button variant="ghost" asChild size="sm">
+          <Button variant="ghost" asChild size="sm" className="hover:text-white">
             <Link href="/forgot-password">Back to Forgot Password</Link>
           </Button>
         </p>

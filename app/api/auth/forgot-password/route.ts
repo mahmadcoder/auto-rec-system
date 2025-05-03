@@ -32,11 +32,11 @@ export async function POST(req: NextRequest) {
       where: { email }
     });
     
-    // Don't reveal if user exists or not for security reasons
+    // Check if user exists
     if (!userRecord) {
       return NextResponse.json(
-        { message: 'If an account with that email exists, a password reset link has been sent' },
-        { status: 200 }
+        { error: 'No account found with this email address' },
+        { status: 404 }
       );
     }
     

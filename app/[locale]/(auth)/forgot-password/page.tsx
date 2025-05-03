@@ -53,20 +53,30 @@ export default function ForgotPasswordPage() {
         body: JSON.stringify(values),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to send OTP");
+        if (response.status === 404) {
+          // Show error message for non-existent account
+          form.setError("email", {
+            type: "manual",
+            message: "No account found with this email address",
+          });
+          toast.error("No account found with this email address");
+          return;
+        } else {
+          throw new Error(data.error || "Failed to send OTP");
+        }
       }
 
       setEmail(values.email);
       setIsSubmitted(true);
-      toast.success("OTP sent to your email if account exists");
+      toast.success("OTP sent to your email");
       
       // Navigate to OTP verification page
       router.push(`/verify-otp?email=${encodeURIComponent(values.email)}`);
-    } catch (error) {
-      console.error("Forgot password error:", error);
-      toast.error("Failed to send OTP. Please try again.");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }

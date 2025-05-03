@@ -19,7 +19,7 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
       setError(null);
@@ -74,7 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+        setError(data.error || 'Invalid email or password');
+        return false;
       }
       
       const { user, token } = data;
@@ -84,13 +85,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', token);
       
-      toast.success('Signed in successfully');
-      router.push('/dashboard');
+      return true;
     } catch (err: any) {
-      console.error('Login failed:', err);
-      setError(err.message || 'Login failed. Please try again.');
-      toast.error(err.message || 'Login failed. Please try again.');
-      throw err;
+      setError('Invalid email or password');
+      return false;
     } finally {
       setLoading(false);
     }

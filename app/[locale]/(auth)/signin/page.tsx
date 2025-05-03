@@ -48,12 +48,27 @@ export default function SignInPage() {
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
     try {
-      await login(values.email, values.password);
-      toast.success("Signed in successfully");
-      router.push("/dashboard");
+      const success = await login(values.email, values.password);
+      
+      if (success) {
+        toast.success("Signed in successfully");
+        router.push("/dashboard");
+      } else {
+        // Show error message on the form
+        form.setError("email", {
+          type: "manual",
+          message: "Invalid email or password",
+        });
+        
+        form.setError("password", {
+          type: "manual",
+          message: "Invalid email or password",
+        });
+        
+        toast.error("Invalid email or password. Please check your credentials.");
+      }
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Failed to sign in. Please check your credentials.");
+      toast.error("Failed to sign in. Please try again later.");
     } finally {
       setIsLoading(false);
     }
