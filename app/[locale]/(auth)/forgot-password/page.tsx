@@ -72,9 +72,6 @@ export default function ForgotPasswordPage() {
       setEmail(values.email);
       setIsSubmitted(true);
       toast.success("OTP sent to your email");
-      
-      // Navigate to OTP verification page
-      router.push(`/verify-otp?email=${encodeURIComponent(values.email)}`);
     } catch (error: any) {
       toast.error(error.message || "Failed to send OTP. Please try again.");
     } finally {
@@ -88,7 +85,7 @@ export default function ForgotPasswordPage() {
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Check Your Email</h1>
           <p className="text-muted-foreground">
-            We've sent a 4-digit OTP to your email address if an account exists.
+            We've sent a 4-digit OTP to your email address. Please check your inbox and enter the code below.
           </p>
         </div>
         <div className="space-y-4">
