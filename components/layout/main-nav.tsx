@@ -122,15 +122,25 @@ export function MainNav() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56" sideOffset={8}>
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard">Dashboard</Link>
-                </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+  <Link
+    href="/profile"
+    className="group flex items-center"
+  >
+    <User className="mr-2 h-4 w-4 group-hover:text-white cursor-pointer" />
+    <span className="group-hover:text-white cursor-pointer">Profile</span>
+  </Link>
+</DropdownMenuItem>
+
+<DropdownMenuItem asChild>
+  <Link
+    href="/dashboard"
+    className="group flex items-center"
+  >
+    <span className="group-hover:text-white cursor-pointer">Dashboard</span>
+  </Link>
+</DropdownMenuItem>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="text-red-500 focus:text-red-500">
                   <LogOut className="mr-2 h-4 w-4" />

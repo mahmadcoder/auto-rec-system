@@ -22,6 +22,7 @@ model User {
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @default(now()) @updatedAt
   passwordResetTokens PasswordResetToken[]
+  jobs              Job[]              // Relation to jobs created by this user
 
   @@map("users")
 }
@@ -36,4 +37,29 @@ model PasswordResetToken {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("password_reset_tokens")
+}
+
+model Job {
+  id                Int       @id @default(autoincrement())
+  userId            Int       // Foreign key to User
+  jobTitle          String
+  category          String
+  location          String
+  employmentType    String
+  salaryRange       String
+  jobDescription    String    @db.Text
+  requiredSkills    String[]  // Array of skills
+  requiredExperience String
+  postToLinkedIn    Boolean   @default(false)
+  postToIndeed      Boolean   @default(false)
+  postToGlassdoor   Boolean   @default(false)
+  postToMonster     Boolean   @default(false)
+  enableAIMatching  Boolean   @default(false)
+  searchExistingPool Boolean  @default(false)
+  status            String    @default("draft") // draft, published, closed, archived
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
+  user              User      @relation(fields: [userId], references: [id])
+
+  @@map("jobs")
 }

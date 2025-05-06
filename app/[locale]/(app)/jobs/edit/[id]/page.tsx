@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-
 import { 
   ChevronRight, 
   Circle, 
@@ -16,25 +15,26 @@ import {
   Briefcase, 
   Users,
   X,
-  Check
+  Check,
+  Loader2
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
-// Tab items for job description section
-const descriptionTabItems = [
-  { id: "write-description", label: "Write Description" },
-  { id: "upload-file", label: "Upload File" },
-  { id: "ai-generate", label: "AI Generate" },
-];
-
-export default function CreateNewJobPage() {
-  // Define types
+// Define types
 type JobStatus = 'draft' | 'published' | 'closed' | 'archived';
 type EmploymentType = 'full-time' | 'part-time' | 'contract' | 'internship';
+type DescriptionTabId = 'write-description' | 'upload-file' | 'ai-generate';
 type ToastVariant = 'default' | 'success' | 'error' | 'warning' | null | undefined;
+
+// Tab items for job description section
+const descriptionTabItems = [
+  { id: "write-description" as DescriptionTabId, label: "Write Description" },
+  { id: "upload-file" as DescriptionTabId, label: "Upload File" },
+  { id: "ai-generate" as DescriptionTabId, label: "AI Generate" },
+];
 
 interface JobFormData {
   jobTitle: string;
@@ -45,10 +45,11 @@ interface JobFormData {
   jobDescription: string;
   requiredSkills: string;
   requiredExperience: string;
-  status?: JobStatus;
+  status: JobStatus;
 }
 
-// Form state
+export default function EditJobPage() {
+  // Form state
   const [formData, setFormData] = useState<JobFormData>({
     jobTitle: "",
     category: "",
@@ -61,7 +62,6 @@ interface JobFormData {
     status: "draft"
   });
   
-  // State for switches
   interface SwitchStates {
     postToLinkedIn: boolean;
     postToIndeed: boolean;
@@ -70,7 +70,8 @@ interface JobFormData {
     enableAIMatching: boolean;
     searchExistingPool: boolean;
   }
-  
+
+  // State for switches
   const [switchStates, setSwitchStates] = useState<SwitchStates>({
     postToLinkedIn: false,
     postToIndeed: false,
@@ -84,12 +85,75 @@ interface JobFormData {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   
   // Active tab state
-  const [activeDescriptionTab, setActiveDescriptionTab] = useState("write-description");
+  const [activeDescriptionTab, setActiveDescriptionTab] = useState<DescriptionTabId>("write-description");
 
-  // Loading state
+  // Loading states
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
+  const params = useParams();
+  const jobId = params.id as string;
+
+  // Fetch job data
+  useEffect(() => {
+    const fetchJobData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/jobs/${jobId}`, {
+          headers: {
+            'Authorization': 'Bearer placeholder-token' // Replace with actual auth
+          }
+        });
+
+        if (response.ok) {
+          const jobData = await response.json();
+          
+          // Set form data
+          setFormData({
+            jobTitle: jobData.jobTitle,
+            category: jobData.category,
+            location: jobData.location,
+            employmentType: jobData.employmentType,
+            salaryRange: jobData.salaryRange,
+            jobDescription: jobData.jobDescription,
+            requiredSkills: Array.isArray(jobData.requiredSkills) 
+              ? jobData.requiredSkills.join(', ') 
+              : jobData.requiredSkills,
+            requiredExperience: jobData.requiredExperience,
+            status: jobData.status
+          });
+
+          // Set switch states
+          setSwitchStates({
+            postToLinkedIn: jobData.postToLinkedIn,
+            postToIndeed: jobData.postToIndeed,
+            postToGlassdoor: jobData.postToGlassdoor,
+            postToMonster: jobData.postToMonster,
+            enableAIMatching: jobData.enableAIMatching,
+            searchExistingPool: jobData.searchExistingPool,
+          });
+        } else {
+          toast.error('Failed to load job', {
+            description: 'Could not load the job details. Please try again.'
+          });
+          router.push('/jobs');
+        }
+      } catch (error) {
+        console.error('Error fetching job:', error);
+        toast.error('Error loading job', {
+          description: 'An error occurred while loading the job details.'
+        });
+        router.push('/jobs');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (jobId) {
+      fetchJobData();
+    }
+  }, [jobId, router, toast]);
 
   // Input change handler
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -116,13 +180,13 @@ interface JobFormData {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent, status: JobStatus = 'draft') => {
+  const handleSubmit = async (e: React.FormEvent, status?: JobStatus) => {
     e.preventDefault();
     
     // Validate form
     if (!formData.jobTitle || !formData.category || !formData.location || !formData.employmentType) {
-      toast.error('Please fill in all required job details.', {
-        description: 'Job title, category, location and employment type are required.'
+      toast.error('Missing required fields', {
+        description: 'Please fill in all required job details.'
       });
       return;
     }
@@ -130,8 +194,8 @@ interface JobFormData {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/api/jobs', {
-        method: 'POST',
+      const response = await fetch(`/api/jobs/${jobId}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer placeholder-token' // This is a placeholder, replace with actual auth
@@ -151,19 +215,19 @@ interface JobFormData {
           postToMonster: switchStates.postToMonster,
           enableAIMatching: switchStates.enableAIMatching,
           searchExistingPool: switchStates.searchExistingPool,
-          status: status
+          status: status || formData.status
         })
       });
 
       if (response.ok) {
         // Show success toast
         if (status === 'published') {
-          toast.success('Job Published!', {
+          toast.success('Job Published', {
             description: 'Your job has been published successfully.'
           });
         } else {
-          toast.success('Job Saved as Draft', {
-            description: 'Your job has been saved as a draft.'
+          toast.success('Job Updated', {
+            description: 'Your job has been updated successfully.'
           });
         }
         
@@ -171,8 +235,8 @@ interface JobFormData {
         router.push('/jobs');
       } else {
         const errorData = await response.json();
-        console.error('Error creating job:', errorData);
-        toast.error('Failed to create job', {
+        console.error('Error updating job:', errorData);
+        toast.error('Failed to update job', {
           description: 'Please try again later.'
         });
       }
@@ -198,6 +262,17 @@ interface JobFormData {
     setIsPreviewMode(!isPreviewMode);
   };
 
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-6 flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="h-10 w-10 animate-spin text-[#1231AA] mx-auto mb-4" />
+          <p className="text-lg text-gray-600">Loading job details...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-6">
       {/* Main form content - hidden when in preview mode */}
@@ -208,10 +283,10 @@ interface JobFormData {
         <ChevronRight className="h-4 w-4 mx-1" />
         <Link href="/jobs" className="hover:text-gray-700">Jobs</Link>
         <ChevronRight className="h-4 w-4 mx-1" />
-        <span className="text-gray-900">Create New Job</span>
+        <span className="text-gray-900">Edit Job</span>
       </div>
 
-      <h1 className="text-2xl font-bold mb-6">Create New Job</h1>
+      <h1 className="text-2xl font-bold mb-6">Edit Job</h1>
 
       <div className="space-y-8">
         {/* Job Details Section */}
@@ -261,7 +336,10 @@ interface JobFormData {
 
               <div className="space-y-2">
                 <Label htmlFor="employmentType">Employment Type</Label>
-                <Select onValueChange={(value) => handleSelectChange("employmentType", value)}>
+                <Select 
+                  value={formData.employmentType} 
+                  onValueChange={(value) => handleSelectChange("employmentType", value)}
+                >
                   <SelectTrigger className="rounded-3xl">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -331,27 +409,27 @@ interface JobFormData {
 
         {/* Required Skills Section */}
         <div>
-  <h2 className="text-lg font-semibold mb-4">Required Skills</h2>
-  <div className="space-y-2">
-    <div className="relative flex items-center">
-      <Input 
-        id="requiredSkills"
-        name="requiredSkills"
-        placeholder="e.g. JavaScript, React, Node.js"
-        value={formData.requiredSkills}
-        onChange={handleInputChange}
-        className="rounded-3xl pr-12" // Added padding-right to make space for the button
-      />
-      <Button 
-  variant="ghost" 
-  size="icon" 
-  className="absolute right-2 p-1 h-6 w-6 rounded-full hover:bg-blue-600 hover:text-white"
->
-  <Plus className="h-3 w-3" />
-</Button>
-    </div>
-  </div>
-</div>
+          <h2 className="text-lg font-semibold mb-4">Required Skills</h2>
+          <div className="space-y-2">
+            <div className="relative flex items-center">
+              <Input 
+                id="requiredSkills"
+                name="requiredSkills"
+                placeholder="e.g. JavaScript, React, Node.js"
+                value={formData.requiredSkills}
+                onChange={handleInputChange}
+                className="rounded-3xl pr-12" // Added padding-right to make space for the button
+              />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="absolute right-2 p-1 h-6 w-6 rounded-full hover:bg-blue-600 hover:text-white"
+              >
+                <Plus className="h-3 w-3" />
+              </Button>
+            </div>
+          </div>
+        </div>
 
         {/* Required Experience Section */}
         <div>
@@ -375,7 +453,7 @@ interface JobFormData {
 
           <div className="space-y-4">
             {/* LinkedIn */}
-            <div className="flex items-center justify-between  p-3">
+            <div className="flex items-center justify-between p-3">
               <div className="flex items-center space-x-3">
                 <div className="h-10 w-10 rounded-full bg-[#E0E4F0] flex items-center justify-center mb-2">
                   <Briefcase className="h-6 w-6 text-blue-600" />
@@ -392,7 +470,7 @@ interface JobFormData {
             </div>
 
             {/* Indeed */}
-            <div className="flex items-center justify-between  p-3 ">
+            <div className="flex items-center justify-between p-3">
               <div className="flex items-center space-x-3">
                 <div className="h-10 w-10 rounded-full bg-[#E0E4F0] flex items-center justify-center mb-2">
                   <Briefcase className="h-6 w-6 text-blue-600" />
@@ -409,7 +487,7 @@ interface JobFormData {
             </div>
 
             {/* Glassdoor */}
-            <div className="flex items-center justify-between  p-3  shadow-sm">
+            <div className="flex items-center justify-between p-3 shadow-sm">
               <div className="flex items-center space-x-3">
                 <div className="h-10 w-10 rounded-full bg-[#E0E4F0] flex items-center justify-center mb-2">
                   <Briefcase className="h-6 w-6 text-blue-600" />
@@ -426,7 +504,7 @@ interface JobFormData {
             </div>
 
             {/* Monster */}
-            <div className="flex items-center justify-between  p-3 ">
+            <div className="flex items-center justify-between p-3">
               <div className="flex items-center space-x-3">
                 <div className="h-10 w-10 rounded-full bg-[#E0E4F0] flex items-center justify-center mb-2">
                   <Briefcase className="h-6 w-6 text-blue-600" />
@@ -452,7 +530,7 @@ interface JobFormData {
             {/* AI Candidate Matching */}
             <div className="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
               <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 rounded-full bg-[#E0E4F0] flex items-center justify-center mb-2">
+                <div className="h-10 w-10 rounded-full bg-[#E0E4F0] flex items-center justify-center mb-2">
                   <Briefcase className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
@@ -469,7 +547,7 @@ interface JobFormData {
             {/* Search Existing Candidate Pool */}
             <div className="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
               <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 rounded-full bg-[#E0E4F0] flex items-center justify-center mb-2">
+                <div className="h-10 w-10 rounded-full bg-[#E0E4F0] flex items-center justify-center mb-2">
                   <Users className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
@@ -490,16 +568,16 @@ interface JobFormData {
           <Button 
             variant="outline" 
             className="rounded-3xl text-black hover:bg-[#1231AA] hover:text-white"
-            onClick={(e) => handleSubmit(e, 'draft')}
+            onClick={(e) => handleSubmit(e)}
             disabled={isSubmitting}
           >
-            {isSubmitting && formData.status === 'draft' ? (
+            {isSubmitting ? (
               <span className="flex items-center">
                 <Circle className="mr-2 h-4 w-4 animate-spin" />
                 Saving...
               </span>
             ) : (
-              'Save as Draft'
+              'Save Changes'
             )}
           </Button>
           <Button 
@@ -511,111 +589,116 @@ interface JobFormData {
           >
             {isPreviewMode ? 'Edit Job' : 'Preview'}
           </Button>
-          <Button 
-            className="rounded-full bg-green-600 hover:bg-green-700"
-            onClick={(e) => handleSubmit(e, 'published')}
-            disabled={isSubmitting}
-          >
-            {isSubmitting && formData.status === 'published' ? (
-              <span className="flex items-center">
-                <Circle className="mr-2 h-4 w-4 animate-spin" />
-                Publishing...
-              </span>
-            ) : (
-              'Publish Job'
-            )}
-          </Button>
+          {formData.status !== 'published' && (
+            <Button 
+              className="rounded-full bg-green-600 hover:bg-green-700"
+              onClick={(e) => handleSubmit(e, 'published')}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center">
+                  <Circle className="mr-2 h-4 w-4 animate-spin" />
+                  Publishing...
+                </span>
+              ) : (
+                'Publish Job'
+              )}
+            </Button>
+          )}
         </div>
+      </div>
+      </div>
 
-        {/* Preview Modal */}
+      {/* Preview Modal */}
       {isPreviewMode && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">Job Preview</h2>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={togglePreview}
-                    className="rounded-full hover:bg-gray-200"
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-                
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-xl font-bold">{formData.jobTitle || 'Job Title'}</h3>
-                    <p className="text-gray-500">{formData.category || 'Category'} • {formData.location || 'Location'}</p>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                        {formData.employmentType || 'Employment Type'}
-                      </Badge>
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                        {formData.salaryRange || 'Salary Range'}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2">Job Description</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap">
-                      {formData.jobDescription || 'No description provided.'}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2">Required Skills</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {formData.requiredSkills ? 
-                        formData.requiredSkills.split(',').map((skill, index) => (
-                          <Badge key={index} className="bg-gray-100 text-gray-800 hover:bg-gray-200">
-                            {skill.trim()}
-                          </Badge>
-                        )) : 
-                        <p className="text-gray-500">No skills specified</p>
-                      }
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2">Required Experience</h4>
-                    <p>{formData.requiredExperience || 'No experience requirements specified.'}</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2">Distribution</h4>
-                    <div className="flex gap-2">
-                      {switchStates.postToLinkedIn && (
-                        <Badge className="bg-blue-600 hover:bg-blue-700">LinkedIn</Badge>
-                      )}
-                      {switchStates.postToIndeed && (
-                        <Badge className="bg-blue-400 hover:bg-blue-500">Indeed</Badge>
-                      )}
-                      {switchStates.postToGlassdoor && (
-                        <Badge className="bg-green-600 hover:bg-green-700">Glassdoor</Badge>
-                      )}
-                      {switchStates.postToMonster && (
-                        <Badge className="bg-purple-600 hover:bg-purple-700">Monster</Badge>
-                      )}
-                      {!switchStates.postToLinkedIn && !switchStates.postToIndeed && 
-                       !switchStates.postToGlassdoor && !switchStates.postToMonster && (
-                        <p className="text-gray-500">No distribution channels selected</p>
-                      )}
-                    </div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Job Preview</h2>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={togglePreview}
+                  className="rounded-full hover:bg-gray-200"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-bold">{formData.jobTitle || 'Job Title'}</h3>
+                  <p className="text-gray-500">{formData.category || 'Category'} • {formData.location || 'Location'}</p>
+                  <div className="flex gap-2 mt-2">
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      {formData.employmentType || 'Employment Type'}
+                    </Badge>
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      {formData.salaryRange || 'Salary Range'}
+                    </Badge>
                   </div>
                 </div>
                 
-                <div className="mt-8 flex justify-end space-x-4">
-                  <Button 
-                    variant="default" 
-                    onClick={togglePreview}
-                    className="rounded-3xl text-black hover:bg-[#1231AA] hover:text-white"
-                    disabled={isSubmitting}
-                  >
-                    Back to Edit
-                  </Button>
+                <div>
+                  <h4 className="font-semibold mb-2">Job Description</h4>
+                  <div className="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap">
+                    {formData.jobDescription || 'No description provided.'}
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">Required Skills</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.requiredSkills ? 
+                      formData.requiredSkills.split(',').map((skill, index) => (
+                        <Badge key={index} className="bg-gray-100 text-gray-800 hover:bg-gray-200">
+                          {skill.trim()}
+                        </Badge>
+                      )) : 
+                      <p className="text-gray-500">No skills specified</p>
+                    }
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">Required Experience</h4>
+                  <p>{formData.requiredExperience || 'No experience requirements specified.'}</p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">Distribution</h4>
+                  <div className="flex gap-2">
+                    {switchStates.postToLinkedIn && (
+                      <Badge className="bg-blue-600 hover:bg-blue-700">LinkedIn</Badge>
+                    )}
+                    {switchStates.postToIndeed && (
+                      <Badge className="bg-blue-400 hover:bg-blue-500">Indeed</Badge>
+                    )}
+                    {switchStates.postToGlassdoor && (
+                      <Badge className="bg-green-600 hover:bg-green-700">Glassdoor</Badge>
+                    )}
+                    {switchStates.postToMonster && (
+                      <Badge className="bg-purple-600 hover:bg-purple-700">Monster</Badge>
+                    )}
+                    {!switchStates.postToLinkedIn && !switchStates.postToIndeed && 
+                     !switchStates.postToGlassdoor && !switchStates.postToMonster && (
+                      <p className="text-gray-500">No distribution channels selected</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 flex justify-end space-x-4">
+                <Button 
+                  variant="outline" 
+                  onClick={togglePreview}
+                  className="rounded-3xl text-black hover:bg-[#1231AA] hover:text-white"
+                  disabled={isSubmitting}
+                >
+                  Back to Edit
+                </Button>
+                {formData.status !== 'published' && (
                   <Button 
                     className="rounded-3xl bg-green-600 hover:bg-green-700"
                     onClick={(e) => handleSubmit(e, 'published')}
@@ -630,13 +713,12 @@ interface JobFormData {
                       'Publish Job'
                     )}
                   </Button>
-                </div>
+                )}
               </div>
             </div>
           </div>
-        )}
-      </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
