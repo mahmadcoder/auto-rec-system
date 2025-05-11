@@ -6,7 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { BadgeCheck, Briefcase, Calendar, GraduationCap, MapPin } from "lucide-react";
 
-export default function ExperienceTab() {
+interface ExperienceTabProps {
+  onExperienceUpdate?: (experience: any) => void;
+}
+
+export default function ExperienceTab({ onExperienceUpdate }: ExperienceTabProps) {
+  // Call onExperienceUpdate when experience data changes
+  const handleExperienceChange = (experienceData: any) => {
+    if (onExperienceUpdate) {
+      onExperienceUpdate(experienceData);
+    }
+  };
   return (
     <div className="space-y-8">
       {/* Work Experience Section */}

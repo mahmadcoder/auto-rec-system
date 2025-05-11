@@ -23,6 +23,7 @@ model User {
   updatedAt         DateTime           @default(now()) @updatedAt
   passwordResetTokens PasswordResetToken[]
   jobs              Job[]              // Relation to jobs created by this user
+  candidates        Candidate[]        // Relation to candidates created by this user
 
   @@map("users")
 }
@@ -62,4 +63,28 @@ model Job {
   user              User      @relation(fields: [userId], references: [id])
 
   @@map("jobs")
+}
+
+model Candidate {
+  id                Int       @id @default(autoincrement())
+  userId            Int       // Foreign key to User
+  firstName         String
+  lastName          String
+  email             String
+  phone             String
+  location          String
+  currentTitle      String
+  currentCompany    String
+  linkedinProfile   String?
+  desiredRole       String?
+  salaryExpectations String?
+  skills            String[]  // Array of skills
+  experience        Json?     // JSON field to store experience data
+  documents         Json?     // JSON field to store document URLs
+  status            String    @default("active") // active, inactive, hired, archived
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
+  user              User      @relation(fields: [userId], references: [id])
+
+  @@map("candidates")
 }

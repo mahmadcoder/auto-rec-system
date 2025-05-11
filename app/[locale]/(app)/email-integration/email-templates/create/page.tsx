@@ -273,7 +273,7 @@ export default function CreateTemplatePage() {
           <Button variant="outline" className="rounded-3xl text-black hover:bg-blue-600 hover:text-white">Save as Draft</Button>
           <Button variant="outline" className="rounded-3xl text-black hover:bg-blue-600 hover:text-white">Preview</Button>
           <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-3xl"
             onClick={handleSaveTemplate}
           >
             Save Template

@@ -22,7 +22,17 @@ import {
   Languages
 } from "lucide-react";
 
-export default function SkillsTab() {
+interface SkillsTabProps {
+  onSkillsUpdate?: (skills: string[]) => void;
+}
+
+export default function SkillsTab({ onSkillsUpdate }: SkillsTabProps) {
+  // Call onSkillsUpdate when skills data changes
+  const handleSkillsChange = (skillsData: string[]) => {
+    if (onSkillsUpdate) {
+      onSkillsUpdate(skillsData);
+    }
+  };
   return (
     <div className="space-y-8">
       {/* Technical Skills Section */}
@@ -265,15 +275,12 @@ function SoftSkillsSection() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="text-gray-400 hover:text-blue-600">
-                  <Edit className="h-5 w-5 text-black" />
-                </button>
-                <button 
-                  className="text-gray-400 hover:text-red-500"
-                  onClick={() => removeSkill(index)}
-                >
-                  <Trash2 className="h-5 w-5 text-black" />
-                </button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                  <Edit className="h-4 w-4 " />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           ))}

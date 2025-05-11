@@ -14,7 +14,8 @@ import {
   Monitor,
   CirclePlus,
   UserPlus,
-  PlusCircle
+  PlusCircle,
+  Loader2
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +32,7 @@ export default function CandidatesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPool, setSelectedPool] = useState("");
   const [eyeStates, setEyeStates] = useState<EyeStatesType>({});
+  const [recentCandidates, setRecentCandidates] = useState<any[]>([]);
 
   // Stats data
   const statsData = [
@@ -88,37 +90,44 @@ export default function CandidatesPage() {
     }
   ];
 
-  // Recent candidates data
-  const recentCandidates = [
-    {
-      name: "Jennifer Lee",
-      position: "Frontend Developer",
-      addedDate: "Added today",
-      pool: "Frontend",
-      avatar: "JL"
-    },
-    {
-      name: "Robert Taylor",
-      position: "DevOps Engineer",
-      addedDate: "Added yesterday",
-      pool: "DevOps",
-      avatar: "RT"
-    },
-    {
-      name: "Sophia Martinez",
-      position: "Product Manager",
-      addedDate: "Added 2 days ago",
-      pool: "None",
-      avatar: "SM"
-    },
-    {
-      name: "Dylan Kim",
-      position: "Data Scientist",
-      addedDate: "Added 3 days ago",
-      pool: "None",
-      avatar: "DK"
+  // Function to fetch candidates from the API
+  const fetchCandidates = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/candidates', {
+        headers: {
+          'Authorization': 'Bearer placeholder-token' // This is a placeholder, replace with actual auth
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setRecentCandidates(data);
+      } else {
+        console.error('Failed to fetch candidates');
+      }
+    } catch (error) {
+      console.error('Error fetching candidates:', error);
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
+
+  // Function to handle search
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter candidates based on search query
+  const filteredCandidates = recentCandidates.filter(candidate => {
+    if (!searchQuery) return true;
+    
+    const fullName = `${candidate.firstName} ${candidate.lastName}`.toLowerCase();
+    const position = (candidate.currentTitle || '').toLowerCase();
+    const searchLower = searchQuery.toLowerCase();
+    
+    return fullName.includes(searchLower) || position.includes(searchLower);
+  });
 
   // Quick actions data
   const quickActions = [
@@ -143,18 +152,18 @@ export default function CandidatesPage() {
   ];
 
   useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
+    // Fetch candidates
+    fetchCandidates();
+  }, []);
 
-    // Initialize eye states for all candidates
+  // Initialize eye states whenever recentCandidates changes
+  useEffect(() => {
     const initialEyeStates: EyeStatesType = {};
     recentCandidates.forEach((_, index) => {
       initialEyeStates[index] = true; // true means eye is open
     });
     setEyeStates(initialEyeStates);
-  }, []);
+  }, [recentCandidates]);
 
   const toggleEye = (index: any) => {
     setEyeStates(prev => ({
@@ -229,7 +238,6 @@ export default function CandidatesPage() {
             </Button>
           </div>
           <div className="grid gap-6 md:grid-cols-4">
-
             {poolsData.map((pool, index) => (
               <Card key={index} className="rounded-3xl bg-[#1231AA0D] border-0">
                 <CardContent className="p-4">
@@ -295,29 +303,73 @@ export default function CandidatesPage() {
                 placeholder="Search candidates..."
                 className="pl-2 rounded-xl w-64"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearch}
               />
               <Search className="h-4 w-4 absolute right-2.5 top-2.5 font-medium" />
             </div>
           </div>
-          <div className="space-y-2">
-            {recentCandidates.map((candidate, index) => (
-              <div key={index} className="flex items-center justify-between py-3 bg-white rounded-xl shadow-sm px-4">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 bg-blue-100 text-blue-700">
-                    <AvatarFallback>{candidate.avatar}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-row items-center space-x-4">
-                    <h4 className="text-sm font-medium w-48">{candidate.name}</h4>
-                    <p className="text-xs font-medium w-32">{candidate.position}</p>
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center py-10">
+            <Loader2 className="h-8 w-8 animate-spin text-[#1231AA]" />
+            <span className="ml-2 text-[#1231AA]">Loading candidates...</span>
+          </div>
+          ) : filteredCandidates.length === 0 ? (
+            <div className="bg-white rounded-xl shadow-sm p-6 text-center">
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <UsersIcon className="h-12 w-12 text-gray-300" />
+                <h3 className="text-lg font-medium text-gray-900">
+                  {searchQuery ? 'No candidates match your search' : 'No candidates yet'}
+                </h3>
+                <p className="text-gray-500 max-w-sm">
+                  {searchQuery 
+                    ? `We couldn't find any candidates matching "${searchQuery}". Try a different search term.` 
+                    : 'Get started by adding your first candidate to the database.'}
+                </p>
+                <Button
+                  variant="default"
+                  size="default"
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl"
+                  asChild
+                >
+                  <Link href="/candidates/add-candidate">
+                    <Plus className="mr-2 h-4 w-4" /> Add Candidate
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="overflow-hidden">
+              {filteredCandidates.map((candidate, index) => (
+                <div key={index} className="flex items-center justify-between px-6 py-4 border-b border-gray-100 hover:bg-gray-50">
+                  <div className="w-10">
+                    <Avatar className="h-8 w-8 bg-blue-100">
+                      <AvatarFallback className="text-blue-700 text-xs">
+                        {candidate.firstName && candidate.lastName 
+                          ? `${candidate.firstName[0]}${candidate.lastName[0]}` 
+                          : 'C'}
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
-                </div>
-                <div className="text-xs font-medium w-1/4 text-center">{candidate.addedDate}</div>
-                <div className="flex items-center gap-1 w-1/6 text-center">
-                  <span className="text-xs font-medium">Pools: {candidate.pool} candidates</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="flex space-x-1">
+                  <div className="flex-1 font-medium">{`${candidate.firstName} ${candidate.lastName}`}</div>
+                  <div className="flex-1 text-sm text-gray-600">{candidate.currentTitle || 'No Title'}</div>
+                  <div className="flex-1 text-sm text-gray-500">
+                    {new Date(candidate.createdAt).toLocaleDateString() === new Date().toLocaleDateString()
+                      ? 'Added today'
+                      : new Date(candidate.createdAt).toLocaleDateString() === new Date(Date.now() - 86400000).toLocaleDateString()
+                        ? 'Added yesterday'
+                        : `Added ${new Date(candidate.createdAt).toLocaleDateString()}`}
+                  </div>
+                  <div className="flex-1">
+                    {candidate.skills && candidate.skills.length > 0 ? (
+                      <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 rounded-full">
+                        {candidate.skills[0]}
+                      </Badge>
+                    ) : (
+                      <span className="text-sm text-gray-500">None</span>
+                    )}
+                  </div>
+                  <div className="w-24 flex justify-end space-x-1">
                     <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
                       <UserPlus className="h-4 w-4" />
                     </Button>
@@ -338,9 +390,9 @@ export default function CandidatesPage() {
                     </Button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Add to Pool */}

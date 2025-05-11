@@ -6,7 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, File as FileIcon, FileText, Trash2, Download, Folder, BadgeCheck } from "lucide-react";
 
-export default function DocumentsTab() {
+interface DocumentsTabProps {
+  onDocumentsUpdate?: (documents: any) => void;
+}
+
+export default function DocumentsTab({ onDocumentsUpdate }: DocumentsTabProps) {
   const [resume, setResume] = useState<File | null>(null);
   const [coverLetter, setCoverLetter] = useState<File | null>(null);
   const [additionalDocs, setAdditionalDocs] = useState<{file: File, type: string}[]>([
@@ -127,12 +131,12 @@ export default function DocumentsTab() {
               </div>
             </div>
             <div className="flex gap-2">
-              <button className="text-black hover:text-gray-600">
-                <Download className="h-5 w-5" />
-              </button>
-              <button className="text-black hover:text-gray-600" onClick={removeResume}>
-                <Trash2 className="h-5 w-5" />
-              </button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                <Download className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white" onClick={removeResume}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         )}
@@ -179,12 +183,12 @@ export default function DocumentsTab() {
               </div>
             </div>
             <div className="flex gap-2">
-              <button className="text-black hover:text-gray-600">
-                <Download className="h-5 w-5" />
-              </button>
-              <button className="text-black hover:text-gray-600" onClick={removeCoverLetter}>
-                <Trash2 className="h-5 w-5" />
-              </button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                <Download className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white" onClick={removeCoverLetter}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         )}
@@ -239,15 +243,17 @@ export default function DocumentsTab() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="text-black hover:text-gray-600">
-                    <Download className="h-5 w-5" />
-                  </button>
-                  <button 
-                    className="text-black hover:text-gray-600"
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 hover:text-white"
                     onClick={() => removeAdditionalDoc(index)}
                   >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             ))}

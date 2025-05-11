@@ -308,7 +308,16 @@ export default function JobsPage() {
             </div>
           ) : filteredJobs.length === 0 ? (
             <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-              <p className="text-gray-500">No jobs found. {searchTerm ? 'Try a different search term.' : 'Create your first job!'}</p>
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <Briefcase className="h-12 w-12 text-gray-300" />
+             <h3 className="text-lg font-medium text-gray-900">
+                  {searchTerm ? 'No jobs match your search' : 'No jobs yet'}
+                </h3>
+                <p className="text-gray-500 max-w-sm">
+                  {searchTerm 
+                    ? `We couldn't find any jobs matching "${searchTerm}". Try a different search term.` 
+                    : 'Get started by adding your first job to the database.'}
+                </p>
               <Link href="/jobs/create-new-job">
                 <Button
                   variant="default"
@@ -318,6 +327,7 @@ export default function JobsPage() {
                   <Plus className="mr-2 h-4 w-4" /> Create New Job
                 </Button>
               </Link>
+              </div>
             </div>
           ) : (
             <div className="space-y-3">
