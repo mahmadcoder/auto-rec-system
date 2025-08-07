@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -133,6 +134,15 @@ export default function AISourceResultsPage() {
   return (
     <DashboardShell>
       <div className="mx-auto space-y-6 p-0 md:p-6">
+        {/* Navigation path */}
+        <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+          <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+          <span>{'>'}</span>
+          <Link href="/ai-sourcing" className="hover:text-gray-700">AI Sourcing</Link>
+          <span>{'>'}</span>
+          <span className="text-gray-700">Results</span>
+        </div>
+
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold tracking-tight">AI Sourcing</h1>

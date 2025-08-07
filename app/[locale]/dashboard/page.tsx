@@ -120,6 +120,13 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto space-y-6 p-0 md:p-6">
+      {/* Navigation path */}
+      <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+        <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+        <span>{'>'}</span>
+        <span className="text-gray-700">Overview</span>
+      </div>
+
       {/* Removed box border around header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Recruitment Dashboard</h1>
@@ -317,7 +324,7 @@ export default function DashboardPage() {
             <Button
               variant="default"
               size="lg"
-              className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
+              className="bg-[#1231AA] text-white rounded-3xl"
             >
               View All Candidates
             </Button>
@@ -355,9 +362,9 @@ export default function DashboardPage() {
           </div>
           <div className="p-6 pt-2">
             <Button
-              variant="outline"
+              variant="default"
               size="lg"
-              className="bg-[#1231AA] hover:bg-[#1231AA]/90 text-white rounded-3xl"
+              className="bg-[#1231AA] text-white rounded-3xl"
             >
               Create New Task
             </Button>

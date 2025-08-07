@@ -81,21 +81,15 @@ export default function CreateTemplatePage() {
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
-      {/* Breadcrumb navigation */}
-      <div className="flex items-center text-sm font-medium mb-6">
-        <Link href="/tools" className="text-gray-500 hover:text-gray-700">
-          Tools
-        </Link>
-        <span className="mx-2 text-gray-500">/</span>
-        <Link href="/email-integration" className="text-gray-500 hover:text-gray-700">
-          Email Integration
-        </Link>
-        <span className="mx-2 text-gray-500">/</span>
-        <Link href="/email-integration/email-templates" className="text-gray-500 hover:text-gray-700">
-          Email Templates
-        </Link>
-        <span className="mx-2 text-gray-500">/</span>
-        <span className="text-gray-900">Create Template</span>
+      {/* Navigation path */}
+      <div className="flex items-center gap-1 text-sm text-gray-500 mb-6">
+        <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+        <span>{'>'}</span>
+        <Link href="/email-integration" className="hover:text-gray-700">Email Integration</Link>
+        <span>{'>'}</span>
+        <Link href="/email-integration/email-templates" className="hover:text-gray-700">Email Templates</Link>
+        <span>{'>'}</span>
+        <span className="text-gray-700">Create Template</span>
       </div>
 
       {/* Header */}

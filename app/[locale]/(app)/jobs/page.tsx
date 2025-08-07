@@ -167,6 +167,13 @@ export default function JobsPage() {
   return (
     <DashboardShell>
       <div className="mx-auto space-y-6 p-0 md:p-6">
+        {/* Navigation path */}
+        <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+          <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+          <span>{'>'}</span>
+          <span className="text-gray-700">Jobs</span>
+        </div>
+        
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">Jobs Management</h1>

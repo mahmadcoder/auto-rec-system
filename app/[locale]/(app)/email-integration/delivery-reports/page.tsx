@@ -98,22 +98,16 @@ export default function DeliveryReports() {
         router.push(href);
     };
 
-
-
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-8">
 
-            {/* Breadcrumb navigation */}
-            <div className="flex items-center text-sm font-medium">
-                <Link href="/tools" className="text-gray-500 hover:text-gray-700">
-                    Tools
-                </Link>
-                <span className="mx-2 text-gray-500">/</span>
-                <Link href="/email-integration" className="text-gray-500 hover:text-gray-700">
-                    Email Integration
-                </Link>
-                <span className="mx-2 text-gray-500">/</span>
-                <span className="text-gray-900">Email Templates</span>
+            {/* Navigation path */}
+            <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+                <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+                <span>{'>'}</span>
+                <Link href="/email-integration" className="hover:text-gray-700">Email Integration</Link>
+                <span>{'>'}</span>
+                <span className="text-gray-700">Delivery Reports</span>
             </div>
 
             {/* Header */}

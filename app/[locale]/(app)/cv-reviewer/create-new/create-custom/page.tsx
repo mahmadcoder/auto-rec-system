@@ -84,21 +84,15 @@ export default function CreateCustomTemplate() {
   return (
     <DashboardShell>
       <div className="mx-auto space-y-6 p-0 md:p-6">
-        {/* Breadcrumb navigation */}
-        <div className="flex items-center text-sm font-medium">
-          <Link href="/dashboard" className="hover:text-foreground">
-            Dashboard
-          </Link>
-          <span className="mx-2">/</span>
-          <Link href="/cv-rebrander" className="hover:text-foreground">
-            CV Rebrander
-          </Link>
-          <span className="mx-2">/</span>
-          <Link href="/template-gallery" className="hover:text-foreground">
-            Template Gallery
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">Create Custom</span>
+        {/* Navigation path */}
+        <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+          <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+          <span>{'>'}</span>
+          <Link href="/cv-reviewer" className="hover:text-gray-700">CV Rebrander</Link>
+          <span>{'>'}</span>
+          <Link href="/cv-reviewer/create-new" className="hover:text-gray-700">Create New</Link>
+          <span>{'>'}</span>
+          <span className="text-gray-700">Create Custom</span>
         </div>
 
         {/* Header */}

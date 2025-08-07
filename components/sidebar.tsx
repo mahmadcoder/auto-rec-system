@@ -104,6 +104,19 @@ const toolsNavItems = [
 export function Sidebar() {
   const pathname = usePathname();
 
+  // Helper function to check if a route is active
+  const isRouteActive = (itemHref: string, currentPath: string) => {
+    // For the dashboard, check if the path ends with 'dashboard' or is exactly '/'
+    if (itemHref === '/dashboard') {
+      return currentPath === '/' || 
+             currentPath.endsWith('/dashboard') || 
+             currentPath.includes('/dashboard/');
+    }
+    
+    // For other routes, check if the path includes the item's href
+    return currentPath.includes(itemHref) && itemHref !== '/';
+  };
+
   return (
     <>
       <Sheet>
@@ -120,18 +133,18 @@ export function Sidebar() {
           side="left"
           className="w-[280px] p-0 bg-[#1231AA0D] border-r"
         >
-          <SidebarContent pathname={pathname} />
+          <SidebarContent pathname={pathname} isRouteActive={isRouteActive} />
         </SheetContent>
       </Sheet>
 
       <aside className="hidden md:flex fixed left-0 top-0 z-30 h-screen w-[280px] flex-col bg-[#1231AA0D] border-r">
-        <SidebarContent pathname={pathname} />
+        <SidebarContent pathname={pathname} isRouteActive={isRouteActive} />
       </aside>
     </>
   );
 }
 
-function SidebarContent({ pathname }: { pathname: string }) {
+function SidebarContent({ pathname, isRouteActive }: { pathname: string, isRouteActive: (itemHref: string, currentPath: string) => boolean }) {
   const { user, logout } = useAuth();
 
   type ExtendedUser = {
@@ -172,11 +185,11 @@ function SidebarContent({ pathname }: { pathname: string }) {
             <Button
               key={item.href}
               asChild
-              variant={pathname === item.href ? "default" : "ghost"}
+              variant={isRouteActive(item.href, pathname) ? "default" : "ghost"}
               className={cn(
                 "w-full justify-start transition-all duration-200 h-10 relative",
-                pathname === item.href
-                  ? "bg-blue-600 text-white font-medium"
+                isRouteActive(item.href, pathname)
+                  ? "bg-blue-600 text-white font-medium rounded-3xl"
                   : "text-black hover:bg-[#1231AA1A] hover:rounded-3xl active:bg-[#1231AA1A] active:rounded-3xl"
               )}
               style={{
@@ -188,12 +201,12 @@ function SidebarContent({ pathname }: { pathname: string }) {
                 <item.icon
                   className={cn(
                     "h-[18px] w-[18px]",
-                    pathname === item.href
+                    isRouteActive(item.href, pathname)
                       ? "text-white stroke-[2px]"
                       : "text-black stroke-[2px]"
                   )}
-                  stroke={pathname === item.href ? "white" : "black"}
-                  fill={pathname === item.href ? "white" : "transparent"}
+                  stroke={isRouteActive(item.href, pathname) ? "white" : "black"}
+                  fill={isRouteActive(item.href, pathname) ? "white" : "transparent"}
                 />
                 <span className="text-sm font-medium">{item.title}</span>
               </Link>
@@ -211,12 +224,12 @@ function SidebarContent({ pathname }: { pathname: string }) {
             <Button
               key={item.href}
               asChild
-              variant={pathname === item.href ? "default" : "ghost"}
+              variant={isRouteActive(item.href, pathname) ? "default" : "ghost"}
               className={cn(
                 "w-full justify-start transition-all duration-200 h-10 relative",
-                pathname === item.href
-                  ? "bg-blue-600 text-white font-medium"
-                  : "text-black hover:bg-[#1231AA1A] hover:rounded-xl"
+                isRouteActive(item.href, pathname)
+                  ? "bg-blue-600 text-white font-medium rounded-3xl"
+                  : "text-black hover:bg-[#1231AA1A] hover:rounded-3xl"
               )}
               style={{
                 position: 'relative',
@@ -227,12 +240,12 @@ function SidebarContent({ pathname }: { pathname: string }) {
                 <item.icon
                   className={cn(
                     "h-[18px] w-[18px] ",
-                    pathname === item.href
+                    isRouteActive(item.href, pathname)
                       ? "text-white stroke-[2px]"
                       : "text-black stroke-[2px]"
                   )}
-                  stroke={pathname === item.href ? "white" : "black"}
-                  fill={pathname === item.href ? "white" : "transparent"}
+                  stroke={isRouteActive(item.href, pathname) ? "white" : "black"}
+                  fill={isRouteActive(item.href, pathname) ? "white" : "transparent"}
                 />
                 <span className="text-sm font-medium">{item.title}</span>
               </Link>
@@ -271,10 +284,10 @@ function SidebarContent({ pathname }: { pathname: string }) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/profile" className="cursor-pointer flex w-full items-center">
-                <FileText className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+            <DropdownMenuItem className="p-0 focus:bg-blue-600 hover:bg-blue-600 rounded-md">
+              <Link href="/profile" className="cursor-pointer flex w-full items-center p-2 text-black hover:text-white group">
+                <FileText className="mr-2 h-4 w-4 group-hover:text-white" />
+                <span className="group-hover:text-white">Profile</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

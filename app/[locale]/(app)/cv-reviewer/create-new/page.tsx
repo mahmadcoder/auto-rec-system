@@ -30,17 +30,13 @@ export default function CreateNew() {
     return (
         <DashboardShell>
             <div className="mx-auto space-y-6 p-0 md:p-6">
-                {/* Breadcrumb navigation */}
-                <div className="flex items-center text-sm font-medium">
-                    <Link href="/dashboard" className="hover:text-foreground">
-                        Dashboard
-                    </Link>
-                    <span className="mx-2">/</span>
-                    <Link href="/cv-reviewer" className="hover:text-foreground">
-                        CV Rebrander
-                    </Link>
-                    <span className="mx-2">/</span>
-                    <span className="text-foreground">Create New</span>
+                {/* Navigation path */}
+                <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+                    <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+                    <span>{'>'}</span>
+                    <Link href="/cv-reviewer" className="hover:text-gray-700">CV Rebrander</Link>
+                    <span>{'>'}</span>
+                    <span className="text-gray-700">Create New</span>
                 </div>
 
                 {/* Header */}
@@ -137,7 +133,7 @@ export default function CreateNew() {
                                     <Button variant="default" size="sm" className="rounded-3xl bg-blue-700 hover:bg-blue-600 text-white text-sm">
                                         Replace
                                     </Button>
-                                    <Button variant="secondary" size="sm" className="bg-[#1231AA0D] rounded-3xl text-blue-700 text-sm">
+                                    <Button variant="secondary" size="sm" className="bg-[#1231AA0D] rounded-3xl text-[#1231AA] text-sm">
                                         Download
                                     </Button>
                                 </div>
@@ -157,7 +153,7 @@ export default function CreateNew() {
                                     <Button variant="default" size="sm" className="rounded-3xl bg-blue-700 hover:bg-blue-600 text-white text-sm">
                                         Edit Content
                                     </Button>
-                                    <Button variant="secondary" size="sm" className="bg-[#1231AA0D] rounded-3xl text-blue-700 text-sm">
+                                    <Button variant="secondary" size="sm" className="bg-[#1231AA0D] rounded-3xl text-[#1231AA] text-sm">
                                         Change Template
                                     </Button>
                                 </div>

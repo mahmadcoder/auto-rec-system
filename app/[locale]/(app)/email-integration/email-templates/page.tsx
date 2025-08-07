@@ -139,30 +139,26 @@ export default function EmailTemplatesPage() {
     // Set the initial activeTab to "templates" since we're on the templates page
     const [activeTab, setActiveTab] = useState("templates");
 
-    const handleTabClick = (tabId: string, href: string) => {
-        router.push(href);
-    };
+  const handleTabClick = (tabId: string, href: string) => {
+    router.push(href);
+  };
 
-    return (
-        <div className="container mx-auto p-6">
-            {/* Breadcrumb navigation */}
-            <div className="flex items-center text-sm font-medium">
-                <Link href="/tools" className="text-gray-500 hover:text-gray-700">
-                    Tools
-                </Link>
-                <span className="mx-2 text-gray-500">/</span>
-                <Link href="/email-integration" className="text-gray-500 hover:text-gray-700">
-                    Email Integration
-                </Link>
-                <span className="mx-2 text-gray-500">/</span>
-                <span className="text-gray-900">Email Templates</span>
-            </div>
+  return (
+    <div className="container mx-auto p-6">
+      {/* Navigation path */}
+      <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+        <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+        <span>{'>'}</span>
+        <Link href="/email-integration" className="hover:text-gray-700">Email Integration</Link>
+        <span>{'>'}</span>
+        <span className="text-gray-700">Email Templates</span>
+      </div>
 
-            {/* Header */}
-            <div className="mb-6 mt-6">
-                <h1 className="text-2xl font-bold mb-2">Email Integration</h1>
-                <p className="text-gray-500">Create and manage email templates for consistent recruitment communications</p>
-            </div>
+      {/* Header */}
+      <div className="mb-6 mt-6">
+        <h1 className="text-2xl font-bold mb-2">Email Integration</h1>
+        <p className="text-gray-500">Create and manage email templates for consistent recruitment communications</p>
+      </div>
 
             {/* Custom Tab Navigation */}
             <div className="border-b border-gray-200 mb-8">

@@ -1,218 +1,216 @@
-  "use client";
+"use client";
 
-  import { useState, useEffect } from "react";
-  import Link from "next/link";
-  import { DashboardShell } from "@/components/dashboard-shell";
-  import { Button } from "@/components/ui/button";
-  import { Card, CardContent } from "@/components/ui/card";
-  import { 
-    CheckCircle, Clock, Plus, Search, Edit, MoreVertical, Calendar,
-    FileText, Circle, Users, ChevronDown, ChevronRight, 
-    Eye, CircleCheck, CircleAlert, Building2, Ellipsis
-  } from "lucide-react";
-  import { LucideProps } from "lucide-react"; // Import LucideProps type for TypeScript
-  import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-  import { Badge } from "@/components/ui/badge";
-  import { Input } from "@/components/ui/input";
-  import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { DashboardShell } from "@/components/dashboard-shell";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  CheckCircle, Clock, Plus, Search, Edit, MoreVertical, Calendar,
+  FileText, Circle, Users, ChevronDown, ChevronRight, 
+  Eye, CircleCheck, CircleAlert, Building2, Ellipsis
+} from "lucide-react";
+import { LucideProps } from "lucide-react"; // Import LucideProps type for TypeScript
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-  export default function TasksPage() {
-    const [isLoading, setIsLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [activeTab, setActiveTab] = useState("all-tasks");
-    
-    // Stats data
-    const statsData = [
-      {
-        title: "PENDING TASKS",
-        value: "18",
-        icon: <Ellipsis className="h-4 w-4 text-blue-600" />,
-        buttonText: "View All",
-        bgColor: "bg-[#1231AA0D]",
-        status: "Required Attention",
-      },
-      {
-        title: "DUE TODAY",
-        value: "7",
-        icon: <Calendar className="h-4 w-4 text-blue-600" />,
-        buttonText: "View Now",
-        bgColor: "bg-[#1231AA0D]",
-        status: "High Priority",
-      },
-      {
-        title: "COMPLETED",
-        value: "42",
-        icon: <CheckCircle className="h-4 w-4 text-blue-600" />,
-        buttonText: "View History",
-        bgColor: "bg-[#1231AA0D]",
-        status: "Last 30 Days",
-      },
-      {
-        title: "NEW TASK",
-        value: "Create Task",
-        icon: <Plus className="h-4 w-4 text-blue-600" />,
-        buttonText: "Create New",
-        bgColor: "bg-[#1231AA0D]",
-        status: "Add Recruitment activity",
-      }
-    ];
+export default function TasksPage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("all-tasks");
+  
+  // Stats data
+  const statsData = [
+    {
+      title: "PENDING TASKS",
+      value: "18",
+      icon: <Ellipsis className="h-4 w-4 text-blue-600" />,
+      buttonText: "View All",
+      bgColor: "bg-[#1231AA0D]",
+      status: "Required Attention",
+    },
+    {
+      title: "DUE TODAY",
+      value: "7",
+      icon: <Calendar className="h-4 w-4 text-blue-600" />,
+      buttonText: "View Now",
+      bgColor: "bg-[#1231AA0D]",
+      status: "High Priority",
+    },
+    {
+      title: "COMPLETED",
+      value: "42",
+      icon: <CheckCircle className="h-4 w-4 text-blue-600" />,
+      buttonText: "View History",
+      bgColor: "bg-[#1231AA0D]",
+      status: "Last 30 Days",
+    },
+    {
+      title: "NEW TASK",
+      value: "Create Task",
+      icon: <Plus className="h-4 w-4 text-blue-600" />,
+      buttonText: "Create New",
+      bgColor: "bg-[#1231AA0D]",
+      status: "Add Recruitment activity",
+    }
+  ];
 
-    // Tab data
-    const tabItems = [
-      { id: "all-tasks", label: "All Tasks" },
-      { id: "my-tasks", label: "My Tasks" },
-      { id: "team-tasks", label: "Team Tasks" },
-      { id: "completed", label: "Completed" }
-    ];
+  // Tab data
+  const tabItems = [
+    { id: "all-tasks", label: "All Tasks" },
+    { id: "my-tasks", label: "My Tasks" },
+    { id: "team-tasks", label: "Team Tasks" },
+    { id: "completed", label: "Completed" }
+  ];
 
-    // Due Today tasks
-    const dueTodayTasks = [
-      {
-        id: 1,
-        title: "Interview Scheduling",
-        assignee: "Michael Johnson",
-        dueIn: "Due in 3 hours",
-        position: "Senior Software Engineer",
-        icon: <CircleAlert className="h-4 w-4 text-gray-500" />
-      },
-      {
-        id: 2,
-        title: "Reference Check",
-        assignee: "Sarah Williams",
-        dueIn: "Due in 5 hours",
-        position: "Product Manager",
-        icon: <CircleAlert className="h-4 w-4 text-gray-500" />
-      },
-      {
-        id: 3,
-        title: "Offer Preparation",
-        assignee: "David Chen",
-        dueIn: "Due in 5 hours",
-        position: "UX Designer",
-        icon: <CircleAlert className="h-4 w-4 text-gray-500" />
-      }
-    ];
+  // Due Today tasks
+  const dueTodayTasks = [
+    {
+      id: 1,
+      title: "Interview Scheduling",
+      assignee: "Michael Johnson",
+      dueIn: "Due in 3 hours",
+      position: "Senior Software Engineer",
+      icon: <CircleAlert className="h-4 w-4 text-black" />
+    },
+    {
+      id: 2,
+      title: "Reference Check",
+      assignee: "Sarah Williams",
+      dueIn: "Due in 5 hours",
+      position: "Product Manager",
+      icon: <CircleAlert className="h-4 w-4 text-black" />
+    },
+    {
+      id: 3,
+      title: "Offer Preparation",
+      assignee: "David Chen",
+      dueIn: "Due in 5 hours",
+      position: "UX Designer",
+      icon: <CircleAlert className="h-4 w-4 text-black" />
+    }
+  ];
 
-    // Upcoming tasks
-    const upcomingTasks = [
-      {
-        id: 4,
-        title: "CV Review",
-        assignee: "Emily Rodriguez",
-        dueIn: "Due tomorrow",
-        position: "Marketing Specialist",
-        icon: <Calendar className="h-4 w-4 text-black" />
-      },
-      {
-        id: 5,
-        title: "Technical Assessment",
-        assignee: "James Wilson",
-        dueIn: "Due tomorrow",
-        position: "Data Analyst",
-        icon: <Calendar className="h-4 w-4 text-black" />
-      },
-      {
-        id: 6,
-        title: "Client Presentation",
-        assignee: "Lisa Thompson",
-        dueIn: "Due in 2 days",
-        position: "Project Manager",
-        icon: <Calendar className="h-4 w-4 text-black" />
-      },
-      {
-        id: 7,
-        title: "Feedback Collection",
-        assignee: "Robert Garcia",
-        dueIn: "Due in 3 days",
-        position: "Sales Director",
-        icon: <Calendar className="h-4 w-4 text-black" />
-      }
-    ];
+  // Upcoming tasks
+  const upcomingTasks = [
+    {
+      id: 4,
+      title: "CV Review",
+      assignee: "Emily Rodriguez",
+      dueIn: "Due tomorrow",
+      position: "Marketing Specialist",
+      icon: <Calendar className="h-4 w-4 text-black" />
+    },
+    {
+      id: 5,
+      title: "Technical Assessment",
+      assignee: "James Wilson",
+      dueIn: "Due tomorrow",
+      position: "Data Analyst",
+      icon: <Calendar className="h-4 w-4 text-black" />
+    },
+    {
+      id: 6,
+      title: "Client Presentation",
+      assignee: "Lisa Thompson",
+      dueIn: "Due in 2 days",
+      position: "Project Manager",
+      icon: <Calendar className="h-4 w-4 text-black" />
+    },
+    {
+      id: 7,
+      title: "Feedback Collection",
+      assignee: "Robert Garcia",
+      dueIn: "Due in 3 days",
+      position: "Sales Director",
+      icon: <Calendar className="h-4 w-4 text-black" />
+    }
+  ];
 
-    // Task Categories
-    const taskCategories = [
-      {
-        title: "Interviews",
-        count: "23 scheduled",
-        icon: <Users className="h-5 w-5 text-blue-600" />,
-        color: "bg-[#E0E4F0]"
-      },
-      {
-        title: "CV Reviews",
-        count: "14 pending",
-        icon: <FileText className="h-5 w-5 text-blue-600" />,
-        color: "bg-[#E0E4F0]"
-      },
-      {
-        title: "Client Meetings",
-        count: "8 upcoming",
-        icon: <Building2 className="h-5 w-5 text-blue-600" />,
-        color: "bg-[#E0E4F0]"
-      },
-      {
-        title: "Assessments",
-        count: "19 to review",
-        icon: <CheckCircle className="h-5 w-5 text-blue-600" />,
-        color: "bg-[#E0E4F0]"
-      }
-    ];
+  // Task Categories
+  const taskCategories = [
+    {
+      title: "Interviews",
+      count: "23 scheduled",
+      icon: <Users className="h-5 w-5 text-blue-600" />,
+      color: "bg-[#E0E4F0]"
+    },
+    {
+      title: "CV Reviews",
+      count: "14 pending",
+      icon: <FileText className="h-5 w-5 text-blue-600" />,
+      color: "bg-[#E0E4F0]"
+    },
+    {
+      title: "Client Meetings",
+      count: "8 upcoming",
+      icon: <Building2 className="h-5 w-5 text-blue-600" />,
+      color: "bg-[#E0E4F0]"
+    },
+    {
+      title: "Assessments",
+      count: "19 to review",
+      icon: <CheckCircle className="h-5 w-5 text-blue-600" />,
+      color: "bg-[#E0E4F0]"
+    }
+  ];
 
-    // Team workload
-    const teamWorkload = [
-      {
-        name: "Alex Morgan",
-        tasks: "9 active tasks",
-        initials: "AM"
-      },
-      {
-        name: "Jessica Lee",
-        tasks: "6 active tasks",
-        initials: "JL"
-      },
-      {
-        name: "Mark Taylor",
-        tasks: "8 active tasks",
-        initials: "MT"
-      },
-      {
-        name: "Sophia Kim",
-        tasks: "5 active tasks",
-        initials: "SK"
-      }
-    ];
+  // Team workload
+  const teamWorkload = [
+    {
+      name: "Alex Morgan",
+      tasks: "9 active tasks",
+      initials: "AM"
+    },
+    {
+      name: "Jessica Lee",
+      tasks: "6 active tasks",
+      initials: "JL"
+    },
+    {
+      name: "Mark Taylor",
+      tasks: "8 active tasks",
+      initials: "MT"
+    },
+    {
+      name: "Sophia Kim",
+      tasks: "5 active tasks",
+      initials: "SK"
+    }
+  ];
 
-    // Define EyeIcon component with proper TypeScript type
-    const EyeIcon = (props: LucideProps) => {
-      return <Eye {...props} />;
-    };
+  // Define EyeIcon component with proper TypeScript type
+  const EyeIcon = (props: LucideProps) => {
+    return <Eye {...props} />;
+  };
 
-    useEffect(() => {
-      // Simulate loading data
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 800);
-    }, []);
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+  }, []);
 
-    return (
-      <DashboardShell>
-        <div className="mx-auto space-y-6 p-0 md:p-6">
-          {/* Breadcrumb navigation */}
-          <div className="flex items-center text-sm font-medium">
-            <Link href="/dashboard" className="hover:text-foreground">
-              Dashboard
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="text-foreground">Tasks</span>
-          </div>
+  return (
+    <DashboardShell>
+      <div className="mx-auto space-y-6 p-0 md:p-6">
+        {/* Navigation path */}
+        <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+          <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+          <span>{'>'}</span>
+          <span className="text-gray-700">Tasks</span>
+        </div>
 
-          {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
-          </div>
-
-          {/* Statistics Cards */}
-          <div className="grid gap-6 md:grid-cols-4">
-            {statsData.map((stat, index) => (
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
+        </div>
+        
+        {/* Statistics Cards */}
+        <div className="grid gap-6 md:grid-cols-4">
+          {statsData.map((stat, index) => (
               <Card key={index} className={`rounded-3xl ${stat.bgColor} border-0`}>
                 <CardContent className="p-4">
                   <div className="flex flex-col items-start">
@@ -383,7 +381,7 @@
                         <Button
                           variant="default"
                           size="sm"
-                          className="text-xs rounded-3xl bg-blue-700 text-white hover:bg-blue-50"
+                          className="text-xs rounded-3xl bg-blue-700 text-white "
                         >
                           View
                         </Button>

@@ -21,20 +21,14 @@ export default function ProcessCV() {
     return (
         <DashboardShell>
             <div className="mx-auto space-y-6 p-0 md:p-6">
-                {/* Breadcrumb navigation */}
-                <div className="flex items-center text-sm font-medium">
-                    <Link href="/dashboard" className="hover:text-foreground">
-                        Dashboard
-                    </Link>
-                    <span className="mx-2">/</span>
-                    <Link href="/cv-reviewer" className="hover:text-foreground">
-                        CV Rebrander
-                    </Link>
-                    <span className="mx-2">/</span>
-                    <Link href="/cv-reviewer/create-new" className="hover:text-foreground">
-                        Create New
-                    </Link>
-                    <span className="mx-2">/</span>
+                {/* Navigation path */}
+                <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+                    <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+                    <span>{'>'}</span>
+                    <Link href="/cv-reviewer" className="hover:text-gray-700">CV Rebrander</Link>
+                    <span>{'>'}</span>
+                    <Link href="/cv-reviewer/create-new" className="hover:text-gray-700">Create New</Link>
+                    <span>{'>'}</span>
                     <span className="text-foreground">Process CV</span>
                 </div>
 
@@ -110,7 +104,7 @@ export default function ProcessCV() {
                                 <div className="flex flex-col items-center">
                                     <Button 
                                         variant="default"
-                                        className="bg-blue-600 text-white rounded-full px-8 py-2 mb-4"
+                                        className="bg-blue-600 text-white rounded-3xl px-8 py-2 mb-4"
                                     >
                                         <ArrowUpFromLine className="h-4 w-4 " />
                                         Upload
@@ -119,7 +113,7 @@ export default function ProcessCV() {
                                 <div className="flex flex-col items-center">
                                     <Button 
                                         variant="default"
-                                        className="bg-blue-600 text-white rounded-full px-8 py-2 mb-4"
+                                        className="bg-blue-600 text-white rounded-3xl px-8 py-2 mb-4"
                                     >
                                         AI Creates stunning content
                                     </Button>
@@ -127,7 +121,7 @@ export default function ProcessCV() {
                                 <div className="flex flex-col items-center">
                                     <Button 
                                         variant="default"
-                                        className="bg-blue-600 text-white rounded-full px-8 py-2 mb-4"
+                                        className="bg-blue-600 text-white rounded-3xl px-8 py-2 mb-4"
                                     >
                                         <span className="flex items-center">
                                             <Send className="h-4 w-4 mr-2" />

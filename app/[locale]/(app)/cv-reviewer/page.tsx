@@ -167,13 +167,11 @@ export default function CVRebrander() {
   return (
     <DashboardShell>
       <div className="mx-auto space-y-6 p-0 md:p-6">
-        {/* Breadcrumb navigation */}
-        <div className="flex items-center text-sm font-medium">
-          <Link href="/dashboard" className="hover:text-foreground">
-            Dashboard
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">CV Rebrander</span>
+        {/* Navigation path */}
+        <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+          <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+          <span>{'>'}</span>
+          <span className="text-gray-700">CV Rebrander</span>
         </div>
 
         {/* Header */}
@@ -342,7 +340,7 @@ export default function CVRebrander() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="text-sm rounded-3xl hover:bg-blue-100"
+                            className="text-sm rounded-3xl hover:bg-blue-600 hover:text-white "
                           >
                             Preview
                           </Button>

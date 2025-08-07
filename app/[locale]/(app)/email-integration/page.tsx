@@ -52,14 +52,12 @@ export default function EmailIntegrationPage() {
   return (
     <DashboardShell>
       <div className="container mx-auto space-y-6 p-0 md:p-6 max-w-4xl">
-        {/* Breadcrumb navigation */}
-        <div className="flex items-center text-sm font-medium">
-          <Link href="/tools" className="text-gray-500 hover:text-gray-700">
-            Tools
-          </Link>
-          <span className="mx-2 text-gray-500">/</span>
-          <span className="text-gray-900">Email Integration</span>
-        </div>
+        {/* Navigation path */}
+                <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+                  <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+                  <span>{'>'}</span>
+                  <span className="text-gray-700">Email Integration</span>
+                </div>
 
         {/* Header */}
         <div className="mb-6">
