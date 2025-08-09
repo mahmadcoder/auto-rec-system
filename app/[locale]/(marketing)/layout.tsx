@@ -1,4 +1,13 @@
 import { MainNav } from "@/components/layout/main-nav";
+import { Metadata } from 'next';
+import Link from 'next/link';
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'AutoRec AI - Automated Recruitment Solutions',
+    description: 'Transform your hiring process with AI-powered recruitment solutions',
+  };
+}
 
 export default function MarketingLayout({
   children,
@@ -17,15 +26,15 @@ export default function MarketingLayout({
               © {new Date().getFullYear()} Autorec AI. All rights reserved.
             </div>
             <div className="flex gap-4 text-sm text-muted-foreground">
-              <a href="/privacy" className="hover:text-foreground">
+              <Link href="/privacy" className="hover:text-foreground">
                 Privacy
-              </a>
-              <a href="/terms" className="hover:text-foreground">
+              </Link>
+              <Link href="/terms" className="hover:text-foreground">
                 Terms
-              </a>
-              <a href="/contact" className="hover:text-foreground">
+              </Link>
+              <Link href="/contact" className="hover:text-foreground">
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
         </footer>

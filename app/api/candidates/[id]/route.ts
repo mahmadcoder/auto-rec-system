@@ -6,28 +6,32 @@ const prisma = new PrismaClient();
 
 // GET a specific candidate by ID
 export async function GET(
-  req: NextRequest,
-  context: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
     // For now, we'll use a simple authentication check
     // In a real app, you would use proper authentication
-    const authHeader = req.headers.get('authorization');
-    
+    const authHeader = request.headers.get("authorization");
+
     if (!authHeader) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     // Extract user ID from auth header or cookie
     // This is a simplified example - in a real app, you would decode a JWT token
     const userId = 1; // Placeholder user ID
 
     // Properly access the id parameter from context
-    const { id } = context.params;
     const candidateId = parseInt(id);
-    
+
     if (isNaN(candidateId)) {
-      return NextResponse.json({ error: "Invalid candidate ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid candidate ID" },
+        { status: 400 }
+      );
     }
 
     // Find candidate with user ID check to ensure users can only access their own candidates
@@ -39,7 +43,10 @@ export async function GET(
     });
 
     if (!candidate) {
-      return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Candidate not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(candidate);
@@ -54,28 +61,31 @@ export async function GET(
 
 // PUT update a candidate
 export async function PUT(
-  req: NextRequest,
-  context: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // For now, we'll use a simple authentication check
     // In a real app, you would use proper authentication
-    const authHeader = req.headers.get('authorization');
-    
+    const authHeader = request.headers.get("authorization");
+
     if (!authHeader) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     // Extract user ID from auth header or cookie
     // This is a simplified example - in a real app, you would decode a JWT token
     const userId = 1; // Placeholder user ID
 
     // Properly access the id parameter from context
-    const { id } = context.params;
     const candidateId = parseInt(id);
-    
+
     if (isNaN(candidateId)) {
-      return NextResponse.json({ error: "Invalid candidate ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid candidate ID" },
+        { status: 400 }
+      );
     }
 
     // Check if candidate exists and belongs to the user
@@ -87,15 +97,18 @@ export async function PUT(
     });
 
     if (!existingCandidate) {
-      return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Candidate not found" },
+        { status: 404 }
+      );
     }
 
-    const data = await req.json();
-    
+    const data = await request.json();
+
     // Process skills to ensure it's an array
     let skills = data.skills || existingCandidate.skills;
-    if (typeof skills === 'string') {
-      skills = skills.split(',').map((skill: string) => skill.trim());
+    if (typeof skills === "string") {
+      skills = skills.split(",").map((skill: string) => skill.trim());
     }
 
     // Update candidate
@@ -132,28 +145,31 @@ export async function PUT(
 
 // DELETE a candidate
 export async function DELETE(
-  req: NextRequest,
-  context: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // For now, we'll use a simple authentication check
     // In a real app, you would use proper authentication
-    const authHeader = req.headers.get('authorization');
-    
+    const authHeader = request.headers.get("authorization");
+
     if (!authHeader) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     // Extract user ID from auth header or cookie
     // This is a simplified example - in a real app, you would decode a JWT token
     const userId = 1; // Placeholder user ID
 
     // Properly access the id parameter from context
-    const { id } = context.params;
     const candidateId = parseInt(id);
-    
+
     if (isNaN(candidateId)) {
-      return NextResponse.json({ error: "Invalid candidate ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid candidate ID" },
+        { status: 400 }
+      );
     }
 
     // Check if candidate exists and belongs to the user
@@ -165,7 +181,10 @@ export async function DELETE(
     });
 
     if (!existingCandidate) {
-      return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Candidate not found" },
+        { status: 404 }
+      );
     }
 
     // Delete candidate

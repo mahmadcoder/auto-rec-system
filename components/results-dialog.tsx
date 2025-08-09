@@ -22,25 +22,25 @@ export function ResultsDialog({ result, isOpen, onClose }: ResultsDialogProps) {
     {
       title: "Emails",
       icon: Mail,
-      items: result.emails,
+      items: Array.isArray(result.data.emails) ? result.data.emails : [],
       color: "text-blue-500",
     },
     {
       title: "Phone Numbers",
       icon: Phone,
-      items: result.phones,
+      items: Array.isArray(result.data.phoneNumbers) ? result.data.phoneNumbers : [],
       color: "text-green-500",
     },
     {
       title: "Addresses",
       icon: MapPin,
-      items: result.addresses,
+      items: Array.isArray(result.data.addresses) ? result.data.addresses : [],
       color: "text-purple-500",
     },
     {
       title: "Postal Codes",
       icon: Hash,
-      items: result.postal_codes,
+      items: Array.isArray(result.data.postalCodes) ? result.data.postalCodes : [],
       color: "text-orange-500",
     },
   ];
@@ -50,8 +50,8 @@ export function ResultsDialog({ result, isOpen, onClose }: ResultsDialogProps) {
       <DialogContent className="max-w-2xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            <span className="truncate">{result.url}</span>
-            <Badge variant={result.status === "completed" ? "default" : "destructive"}>
+            <span className="truncate">{result.websiteId}</span>
+            <Badge variant={result.status === "success" ? "default" : "destructive"}>
               {result.status}
             </Badge>
           </DialogTitle>

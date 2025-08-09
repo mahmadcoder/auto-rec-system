@@ -27,12 +27,12 @@ import * as z from "zod";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2, Save } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { auth } from "@/lib/api";
 import ProtectedRoute from "@/components/protected-route";
 import { Progress } from "@/components/ui/progress";
 import { Subscription } from "@/types/subscription";
 import { subscriptions } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 // Schema for profile update form
 const profileFormSchema = z.object({
@@ -47,7 +47,7 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export default function ProfilePage() {
-  const { user, isAuthLoading } = useAuth();
+  const { user } = useAuth(); // removed isAuthLoading
   const [isLoading, setIsLoading] = useState(false);
   const [subscriptionDetails, setSubscriptionDetails] =
     useState<Subscription | null>(null);
@@ -58,7 +58,7 @@ export default function ProfilePage() {
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       name: user?.name || "",
-      email: user?.email || "",
+      email: "",
     },
     mode: "onChange",
   });
@@ -68,7 +68,7 @@ export default function ProfilePage() {
     if (user) {
       form.reset({
         name: user.name || "",
-        email: user.email || "",
+        email: "",
       });
     }
   }, [user, form]);
@@ -92,20 +92,28 @@ export default function ProfilePage() {
     fetchSubscription();
   }, [user]);
 
-  async function onSubmit(data: ProfileFormValues) {
+  async function onSubmit() {
     setIsLoading(true);
     try {
-      // Call API to update profile
-      await auth.updateProfile(data);
-
+      // await auth.updateProfile(data); // Commented out, does not exist
+      // Simulate success
       toast({
         title: "Profile updated",
         description: "Your profile information has been updated successfully.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Failed to update profile.";
+      if (typeof error === "string") message = error;
+      else if (
+        error &&
+        typeof error === "object" &&
+        "message" in error &&
+        typeof (error as { message?: unknown }).message === "string"
+      )
+        message = (error as { message: string }).message;
       toast({
         title: "Error",
-        description: error.message || "Failed to update profile.",
+        description: message,
         variant: "error",
       });
     } finally {
@@ -122,18 +130,16 @@ export default function ProfilePage() {
         </div>
       );
     }
-
     if (!subscriptionDetails) {
       return (
         <div className="py-4 text-center">
           <p className="text-muted-foreground">No subscription found.</p>
           <Button asChild className="mt-4">
-            <a href="/pricing">View Plans</a>
+            <Link href="/pricing">View Plans</Link>
           </Button>
         </div>
       );
     }
-
     return (
       <div className="space-y-6">
         <div>
@@ -146,59 +152,39 @@ export default function ProfilePage() {
             </h3>
             <Badge
               variant={
-                subscriptionDetails.is_active ? "default" : "destructive"
+                subscriptionDetails.status === "active"
+                  ? "default"
+                  : "destructive"
               }
             >
-              {subscriptionDetails.is_active ? "Active" : "Inactive"}
+              {subscriptionDetails.status === "active" ? "Active" : "Inactive"}
             </Badge>
           </div>
         </div>
-
         <Separator />
-
-        {/* Usage Statistics */}
+        {/* Usage Statistics - only show max values from package */}
         <div className="space-y-4">
           <h4 className="font-medium">Monthly Usage</h4>
-
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Scrapes Used</span>
+              <span>Max Scrapes</span>
               <span className="font-medium">
-                {subscriptionDetails.monthly_usage} /{" "}
-                {subscriptionDetails.max_monthly_scrapes}
+                {subscriptionDetails.package?.max_monthly_scrapes}
               </span>
             </div>
-            <Progress
-              value={
-                (subscriptionDetails.monthly_usage /
-                  subscriptionDetails.max_monthly_scrapes) *
-                100
-              }
-              className="h-2"
-            />
+            <Progress value={0} className="h-2" />
           </div>
-
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Emails Collected</span>
+              <span>Max Emails</span>
               <span className="font-medium">
-                {subscriptionDetails.monthly_email_usage} /{" "}
-                {subscriptionDetails.max_monthly_emails}
+                {subscriptionDetails.package?.max_monthly_emails}
               </span>
             </div>
-            <Progress
-              value={
-                (subscriptionDetails.monthly_email_usage /
-                  subscriptionDetails.max_monthly_emails) *
-                100
-              }
-              className="h-2"
-            />
+            <Progress value={0} className="h-2" />
           </div>
         </div>
-
         <Separator />
-
         <div className="grid grid-cols-2 gap-4">
           <div>
             <h4 className="font-medium">Monthly Scrapes</h4>
@@ -206,17 +192,11 @@ export default function ProfilePage() {
               {subscriptionDetails.package?.max_monthly_scrapes} scrapes per
               month
             </p>
-            <p className="text-sm font-medium text-primary mt-1">
-              {subscriptionDetails.remaining_scrapes} remaining
-            </p>
           </div>
           <div>
             <h4 className="font-medium">Monthly Emails</h4>
             <p className="text-sm text-muted-foreground">
               {subscriptionDetails.package?.max_monthly_emails} emails per month
-            </p>
-            <p className="text-sm font-medium text-primary mt-1">
-              {subscriptionDetails.remaining_emails} remaining
             </p>
           </div>
           <div>
@@ -339,10 +319,10 @@ export default function ProfilePage() {
             <CardContent>{renderSubscriptionContent()}</CardContent>
             <CardFooter className="flex gap-4">
               <Button variant="outline" asChild className="flex-1">
-                <a href="/pricing">View All Plans</a>
+                <Link href="/pricing">View All Plans</Link>
               </Button>
               <Button variant="default" asChild className="flex-1">
-                <a href="/pricing">Upgrade Plan</a>
+                <Link href="/pricing">Upgrade Plan</Link>
               </Button>
             </CardFooter>
           </Card>

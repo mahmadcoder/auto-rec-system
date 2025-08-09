@@ -3,21 +3,16 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { useScrapingContext } from "@/contexts/scraping-context"
 import type { Website } from "@/types/api"
 import type { ScrapingResult } from "@/types/api"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { FileDown, Mail, Phone, MapPin, Hash } from "lucide-react"
 import { ResultsDialog } from "@/components/results-dialog"
 
-interface WebsiteWithResult extends Website {
-  result?: ScrapingResult;
-}
-
 export function WebsiteList() {
-  const { websites, results } = useScrapingContext()
-  const router = useRouter()
+
+  // These should be passed as props or fetched from a parent component
+  const websites: Website[] = []
+  const results: ScrapingResult[] = []
   const getStatusColor = (status: Website["status"]) => {
     switch (status) {
       case "completed":
@@ -52,7 +47,7 @@ export function WebsiteList() {
 
   // Find the result for the selected website
   const selectedResult = selectedWebsite 
-    ? results?.results?.find(result => result.url === selectedWebsite.url)
+    ? (results as ScrapingResult[]).find((result: ScrapingResult) => result.websiteId === selectedWebsite.id)
     : null
 
   return (

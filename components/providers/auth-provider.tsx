@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
-interface User {
+export interface User {
   id: string;
   email: string;
   name?: string;
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [, setToken] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('token', token);
       
       return true;
-    } catch (err: any) {
+    } catch {
       setError('Invalid email or password');
       return false;
     } finally {
@@ -107,11 +107,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       toast.success('Logged out successfully');
       router.push('/');
-    } catch (err: any) {
-      console.error('Logout failed:', err);
-      setError(err.message || 'Logout failed. Please try again.');
-      toast.error(err.message || 'Logout failed. Please try again.');
-      throw err;
+    } catch (error) {
+      console.error('Logout failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Logout failed. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -138,11 +139,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       toast.success('Account created successfully');
       router.push('/signin');
-    } catch (err: any) {
-      console.error('Signup failed:', err);
-      setError(err.message || 'Signup failed. Please try again.');
-      toast.error(err.message || 'Signup failed. Please try again.');
-      throw err;
+    } catch (error) {
+      console.error('Signup failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Signup failed. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -168,11 +170,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       toast.success('Password reset email sent if account exists');
-    } catch (err: any) {
-      console.error('Forgot password failed:', err);
-      setError(err.message || 'Failed to send reset email. Please try again.');
-      toast.error(err.message || 'Failed to send reset email. Please try again.');
-      throw err;
+    } catch (error) {
+      console.error('Forgot password failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send reset email. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -198,11 +201,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       toast.success('Password reset successfully');
-    } catch (err: any) {
-      console.error('Reset password failed:', err);
-      setError(err.message || 'Failed to reset password. Please try again.');
-      toast.error(err.message || 'Failed to reset password. Please try again.');
-      throw err;
+    } catch (error) {
+      console.error('Reset password failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to reset password. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw error;
     } finally {
       setLoading(false);
     }

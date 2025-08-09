@@ -1,7 +1,6 @@
 import type React from "react"
-interface DashboardShellProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function DashboardShell({ children, className, ...props }: DashboardShellProps) {
+export function DashboardShell({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className="flex-1 space-y-8 overflow-y-auto" {...props}>
       {children}

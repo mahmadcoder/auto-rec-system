@@ -134,7 +134,7 @@ export function PricingSection() {
                         <li key={feature.key} className="flex gap-x-3">
                           <Check className="h-5 w-5 text-primary flex-shrink-0" />
                           <span>
-                            {/* @ts-ignore - We know this property exists on the package */}
+                            {/* @ts-expect-error - We know this property exists on the package */}
                             {pkg[feature.key]} {t(`features.${feature.label}`)}
                           </span>
                         </li>
@@ -147,10 +147,10 @@ export function PricingSection() {
                       asChild 
                       size="lg"
                       className="w-full"
-                      variant={isCurrentPlan ? "secondary" : "default"}
+                      variant="default"
                     >
-                      <Link href={isCurrentPlan ? "/profile" : `/subscribe/${pkg.id}`}>
-                        {isCurrentPlan ? t("cta.manageSubscription") : t("cta.getStarted")}
+                      <Link href="/profile">
+                        {t("cta.getStarted")}
                       </Link>
                     </Button>
                   </CardFooter>

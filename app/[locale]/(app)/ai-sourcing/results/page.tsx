@@ -1,19 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Eye, EyeOff, Search, ExternalLink, Check, X, Bell, 
-  Briefcase, GraduationCap, User, BookmarkIcon, Filter, Sparkles,
-  BarChart3, RefreshCw, Puzzle
+import {
+  Search,
+  ExternalLink,
+  Check,
+  X,
+  Bell,
+  Briefcase,
+  GraduationCap,
+  Filter,
+  Sparkles,
+  BarChart3,
+  RefreshCw,
+  Puzzle,
 } from "lucide-react";
 import { searchCandidates, CandidateProfile } from "@/lib/api/linkedin-scraper";
 import { toast } from "sonner";
@@ -23,16 +29,14 @@ interface AcceptedCandidate extends CandidateProfile {
 }
 
 export default function AISourceResultsPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [candidates, setCandidates] = useState<CandidateProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("To Review");
-  const [eyeStates, setEyeStates] = useState<Record<number, boolean>>({});
   const [searchQuery, setSearchQuery] = useState("");
   const [totalResults, setTotalResults] = useState(0);
-  
+
   // Tab options for candidate status
   const tabOptions = ["To Review", "Snoozed", "Rejected", "Added to Projects"];
 
@@ -54,19 +58,19 @@ export default function AISourceResultsPage() {
         const result = await searchCandidates({
           skills,
           location,
-          experience
+          experience,
         });
-        
+
         setCandidates(result.candidates);
         setTotalResults(result.pagination.totalResults);
-        
+
         // Initialize eye states
         const initialEyeStates: Record<number, boolean> = {};
         result.candidates.forEach((_, index) => {
           initialEyeStates[index] = true;
         });
-        setEyeStates(initialEyeStates);
-        
+        // setEyeStates(initialEyeStates); // This line is removed
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching candidates:", error);
@@ -78,55 +82,66 @@ export default function AISourceResultsPage() {
     fetchCandidates();
   }, [skills, location, experience]);
 
-  const toggleEye = (index: number) => {
-    setEyeStates(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
-  };
-
-  const tabs = ["To Review", "Snoozed", "Rejected", "Added to Projects"];
+  // Remove the following unused variables and their definitions:
+  // const toggleEye = (index: number) => {
+  //   setEyeStates((prev) => ({
+  //     ...prev,
+  //     [index]: !prev[index],
+  //   }));
+  // };
+  // const tabs = ["To Review", "Snoozed", "Rejected", "Added to Projects"];
 
   // Filtered candidates based on search
-  const filteredCandidates = candidates.filter(candidate => 
-    candidate.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (candidate["Most Recent Experience"] && candidate["Most Recent Experience"].toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (candidate.Headline && candidate.Headline.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredCandidates = candidates.filter(
+    (candidate) =>
+      candidate.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (candidate.Experience?.[0]?.title &&
+        candidate.Experience[0].title
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())) ||
+      (candidate.Headline &&
+        candidate.Headline.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   // Handle candidate actions
   const handleAcceptCandidate = (candidate: CandidateProfile) => {
     // Save to local storage for the main page to access
-    const savedCandidates: AcceptedCandidate[] = JSON.parse(localStorage.getItem('acceptedCandidates') || '[]');
+    const savedCandidates: AcceptedCandidate[] = JSON.parse(
+      localStorage.getItem("acceptedCandidates") || "[]"
+    );
     savedCandidates.push({
       ...candidate,
-      matchPercentage: Math.floor(75 + Math.random() * 20) + '%' // Generate a random match percentage between 75-95%
+      matchPercentage: Math.floor(75 + Math.random() * 20) + "%", // Generate a random match percentage between 75-95%
     });
-    localStorage.setItem('acceptedCandidates', JSON.stringify(savedCandidates));
-    
+    localStorage.setItem("acceptedCandidates", JSON.stringify(savedCandidates));
+
     // Remove from current list
     const updatedCandidates = [...candidates];
-    const candidateIndex = candidates.findIndex(c => c.Name === candidate.Name);
+    const candidateIndex = candidates.findIndex(
+      (c) => c.Name === candidate.Name
+    );
     if (candidateIndex !== -1) {
       updatedCandidates.splice(candidateIndex, 1);
       setCandidates(updatedCandidates);
     }
-    
+
     toast.success(`${candidate.Name} has been added to recommendations`);
   };
-  
+
   const handleRejectCandidate = (candidate: CandidateProfile) => {
     // Remove from current list
     const updatedCandidates = [...candidates];
-    const candidateIndex = candidates.findIndex(c => c.Name === candidate.Name);
+    const candidateIndex = candidates.findIndex(
+      (c) => c.Name === candidate.Name
+    );
     if (candidateIndex !== -1) {
       updatedCandidates.splice(candidateIndex, 1);
       setCandidates(updatedCandidates);
     }
-    
+
     toast.info(`${candidate.Name} has been rejected`);
   };
-  
+
   const handleNotifyCandidate = (candidate: CandidateProfile) => {
     toast.info(`Notification sent for ${candidate.Name}`);
   };
@@ -136,10 +151,14 @@ export default function AISourceResultsPage() {
       <div className="mx-auto space-y-6 p-0 md:p-6">
         {/* Navigation path */}
         <div className="flex items-center gap-1 text-sm text-gray-500 mb-4">
-          <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
-          <span>{'>'}</span>
-          <Link href="/ai-sourcing" className="hover:text-gray-700">AI Sourcing</Link>
-          <span>{'>'}</span>
+          <Link href="/dashboard" className="hover:text-gray-700">
+            Dashboard
+          </Link>
+          <span>{">"}</span>
+          <Link href="/ai-sourcing" className="hover:text-gray-700">
+            AI Sourcing
+          </Link>
+          <span>{">"}</span>
           <span className="text-gray-700">Results</span>
         </div>
 
@@ -150,7 +169,7 @@ export default function AISourceResultsPage() {
             {skills || "Senior Engineers"}
           </p>
         </div>
-        
+
         {/* Tab Navigation */}
         <div className="border-b mb-6">
           <div className="flex space-x-8">
@@ -158,7 +177,9 @@ export default function AISourceResultsPage() {
               <div key={tab} className="relative pb-2">
                 <Button
                   variant="ghost"
-                  className={`px-0 font-medium ${activeTab === tab ? 'text-primary' : 'text-muted-foreground'}`}
+                  className={`px-0 font-medium ${
+                    activeTab === tab ? "text-primary" : "text-muted-foreground"
+                  }`}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab}
@@ -185,17 +206,25 @@ export default function AISourceResultsPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button variant="outline" className="gap-2 rounded-full bg-blue-700 text-white border-0 px-6 py-2 text-sm font-medium hover:bg-blue-800">
+          <Button
+            variant="outline"
+            className="gap-2 rounded-full bg-blue-700 text-white border-0 px-6 py-2 text-sm font-medium hover:bg-blue-800"
+          >
             <Filter className="h-4 w-4" /> Filter
           </Button>
-          <Button variant="default" className="gap-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 text-sm font-medium">
+          <Button
+            variant="default"
+            className="gap-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 text-sm font-medium"
+          >
             <Sparkles className="h-4 w-4" /> AI Suggestions
           </Button>
         </div>
-        
+
         {/* Candidates Count */}
         <div className="mb-6">
-          <h2 className="text-lg font-medium">Candidates ({totalResults || candidates.length})</h2>
+          <h2 className="text-lg font-medium">
+            Candidates ({totalResults || candidates.length})
+          </h2>
         </div>
 
         {/* Error State */}
@@ -219,18 +248,26 @@ export default function AISourceResultsPage() {
               <p className="text-muted-foreground">No candidates found</p>
             </div>
           ) : (
-            !loading && 
+            !loading &&
             filteredCandidates.map((candidate, index) => (
               <div key={index} className="border rounded-lg p-4 mb-4 shadow-sm">
                 {/* Header with name and actions */}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12 border bg-gray-100">
-                      <AvatarFallback>{candidate.Name.split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
+                      <AvatarFallback>
+                        {candidate.Name.split(" ")
+                          .map((n: string) => n[0])
+                          .join("")}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       <h3 className="font-medium">{candidate.Name}</h3>
-                      <p className="text-sm text-muted-foreground">{candidate.Location} • {candidate.Experience?.[0]?.duration || '8 years experience'}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {candidate.Location} •{" "}
+                        {candidate.Experience?.[0]?.duration ||
+                          "8 years experience"}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -260,37 +297,48 @@ export default function AISourceResultsPage() {
                     </Button>
                   </div>
                 </div>
-                
+
                 {/* Current Position */}
                 <div className="flex items-start gap-3 mt-4">
                   <div className="mt-1 h-8 w-8 flex items-center justify-center">
                     <Briefcase className="h-4 w-4 text-gray-600" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-medium">{candidate.Experience?.[0]?.title || 'Senior Frontend Engineer'}</h4>
-                    <p className="text-xs text-muted-foreground">{candidate.Experience?.[0]?.company || 'TechCorp Inc.'}</p>
+                    <h4 className="text-sm font-medium">
+                      {candidate.Experience?.[0]?.title ||
+                        "Senior Frontend Engineer"}
+                    </h4>
+                    <p className="text-xs text-muted-foreground">
+                      {candidate.Experience?.[0]?.company || "TechCorp Inc."}
+                    </p>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {candidate.Experience?.[0]?.duration || '2019 - Present'}
+                    {candidate.Experience?.[0]?.duration || "2019 - Present"}
                   </div>
                 </div>
                 <hr className="my-2 border-gray-200" />
-                  
+
                 {/* Education section */}
                 <div className="flex items-start gap-3 mt-2">
                   <div className="mt-1 h-8 w-8 flex items-center justify-center">
                     <GraduationCap className="h-4 w-4 text-gray-600" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-medium">{candidate.Education?.[0]?.degree || 'Bachelor of Science in Computer Science'}</h4>
-                    <p className="text-xs text-muted-foreground">{candidate.Education?.[0]?.school || 'Stanford University'}</p>
+                    <h4 className="text-sm font-medium">
+                      {candidate.Education?.[0]?.degree ||
+                        "Bachelor of Science in Computer Science"}
+                    </h4>
+                    <p className="text-xs text-muted-foreground">
+                      {candidate.Education?.[0]?.school ||
+                        "Stanford University"}
+                    </p>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {candidate.Education?.[0]?.duration || '2011 - 2015'}
+                    {candidate.Education?.[0]?.duration || "2011 - 2015"}
                   </div>
                 </div>
                 <hr className="my-2 border-gray-200" />
-                  
+
                 {/* LinkedIn Profile section */}
                 <div className="flex items-start gap-3 mt-2 mb-2">
                   <div className="mt-1 h-8 w-8 flex items-center justify-center">
@@ -300,9 +348,9 @@ export default function AISourceResultsPage() {
                     <p className="text-sm font-medium">LinkedIn Profile</p>
                   </div>
                   <div>
-                    <a 
-                      href={candidate["LinkedIn Profile Link"]} 
-                      target="_blank" 
+                    <a
+                      href={candidate["LinkedIn Profile Link"]}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-blue-600 hover:underline"
                     >
@@ -328,10 +376,15 @@ export default function AISourceResultsPage() {
                 <h3 className="font-medium">AI Sourcing Stats</h3>
               </div>
               <p className="text-sm text-gray-600 mb-6">
-                5 candidates sourced this week, 1 added to projects, 65% match rate
+                5 candidates sourced this week, 1 added to projects, 65% match
+                rate
               </p>
               <div className="flex justify-center">
-                <Button variant="outline" size="sm" className="w-full justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-center"
+                >
                   View Details
                 </Button>
               </div>
@@ -349,7 +402,11 @@ export default function AISourceResultsPage() {
                 Automatically sync approved candidates with your CRM system
               </p>
               <div className="flex gap-2">
-                <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
                   Configure
                 </Button>
                 <Button variant="outline" size="sm">
@@ -370,7 +427,11 @@ export default function AISourceResultsPage() {
                 Source talent directly from LinkedIn with our browser extension
               </p>
               <div className="flex gap-2">
-                <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
                   Install
                 </Button>
                 <Button variant="outline" size="sm">

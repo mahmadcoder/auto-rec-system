@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   ArrowLeft, Briefcase, Users, FileChartColumn,
-  Settings, Clock, Edit, MoreVertical, Plus,
-  Upload, FileText, CheckCircle, Link2, Download,
+  Settings, Edit, MoreVertical, Plus,
+  FileText, Link2,
   TrendingUp,
   Wallet,
   Copy,
@@ -18,9 +18,8 @@ import {
   RotateCw,
   Circle
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 
 const tabItems = [
   { id: "all-posting", label: "All Postings" },
@@ -30,17 +29,12 @@ const tabItems = [
   { id: "draft", label: "Drafts" },
 ];
 
-export default function LinkedInJobPage({ params }: { params: { platform: string } }) {
-  const [isLoading, setIsLoading] = useState(true);
+// PageProps type is available when needed for params and searchParams
+
+export default function LinkedInJobPage() {
   const [activeTab, setActiveTab] = useState("overview");
-
-
-  useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-  }, []);
+  // Destructure params for future use
+  // const { linkedin: jobId } = params; // Uncomment when needed
 
   // Sample data for active LinkedIn job listings
   const linkedInJobs = [

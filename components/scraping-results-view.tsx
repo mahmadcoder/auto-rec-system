@@ -1,13 +1,12 @@
 "use client";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileDown, Mail, Phone, MapPin, Hash } from "lucide-react";
-import { useScrapingContext } from "@/contexts/scraping-context";
+import { useScraping } from "@/contexts/scraping-context";
 import type { ScrapingResult } from "@/types/api";
-import { downloadCSV, resultToCSV, resultsToCSV } from "@/utils/export-utils";
+import { downloadCSV, resultToCSV, resultsToCSV } from "@/lib/export-utils";
 
 interface ResultsSummaryProps {
   results: ScrapingResult[];
@@ -15,19 +14,34 @@ interface ResultsSummaryProps {
 
 function ResultsSummary({ results }: ResultsSummaryProps) {
   const totalEmails = results?.reduce(
-    (sum, result) => sum + result.emails.length,
+    (sum, result) => {
+      const data = result.data || {};
+      return sum + (Array.isArray(data.emails) ? data.emails.length : 0);
+    },
     0
   );
+  
   const totalPhones = results?.reduce(
-    (sum, result) => sum + result.phones.length,
+    (sum, result) => {
+      const data = result.data || {};
+      return sum + (Array.isArray(data.phoneNumbers) ? data.phoneNumbers.length : 0);
+    },
     0
   );
+  
   const totalAddresses = results?.reduce(
-    (sum, result) => sum + result.addresses.length,
+    (sum, result) => {
+      const data = result.data || {};
+      return sum + (Array.isArray(data.addresses) ? data.addresses.length : 0);
+    },
     0
   );
+  
   const totalPostalCodes = results?.reduce(
-    (sum, result) => sum + result.postal_codes.length,
+    (sum, result) => {
+      const data = result.data || {};
+      return sum + (Array.isArray(data.postal_codes) ? data.postal_codes.length : 0);
+    },
     0
   );
 
@@ -99,28 +113,29 @@ function ResultsSummary({ results }: ResultsSummaryProps) {
 }
 
 function ResultsTable({ result }: { result: ScrapingResult }) {
+  const data = result.data || {};
   const sections = [
     {
       title: "Emails",
-      items: result.emails,
+      items: Array.isArray(data.emails) ? data.emails : [],
       icon: Mail,
       color: "text-blue-500",
     },
     {
       title: "Phone Numbers",
-      items: result.phones,
+      items: Array.isArray(data.phoneNumbers) ? data.phoneNumbers : [],
       icon: Phone,
       color: "text-green-500",
     },
     {
       title: "Addresses",
-      items: result.addresses,
+      items: Array.isArray(data.addresses) ? data.addresses : [],
       icon: MapPin,
       color: "text-purple-500",
     },
     {
       title: "Postal Codes",
-      items: result.postal_codes,
+      items: Array.isArray(data.postal_codes) ? data.postal_codes : [],
       icon: Hash,
       color: "text-orange-500",
     },
@@ -128,7 +143,7 @@ function ResultsTable({ result }: { result: ScrapingResult }) {
 
   const handleExport = () => {
     const csv = resultToCSV(result);
-    const filename = `scraping-results-${result.url.replace(/[^a-z0-9]/gi, '-').slice(0, 30)}.csv`;
+    const filename = `scraping-results-${result.websiteId.replace(/[^a-z0-9]/gi, '-').slice(0, 30)}.csv`;
     downloadCSV(csv, filename);
   };
 
@@ -137,7 +152,7 @@ function ResultsTable({ result }: { result: ScrapingResult }) {
       <CardHeader className="pb-3 space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <CardTitle className="text-base font-medium break-all">
-            {result.url}
+            {result.websiteId}
           </CardTitle>
           <Button 
             variant="outline" 
@@ -159,7 +174,7 @@ function ResultsTable({ result }: { result: ScrapingResult }) {
             </h4>
             {items.length > 0 ? (
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {items.map((item, i) => (
+                {items.map((item: string, i: number) => (
                   <div
                     key={i}
                     className="flex items-center p-2 rounded-md bg-muted/50 hover:bg-muted group"
@@ -180,10 +195,15 @@ function ResultsTable({ result }: { result: ScrapingResult }) {
   );
 }
 
-export function ScrapingResultsView() {
-  const { results, isLoadingResults } = useScrapingContext();
+interface ScrapingResultsViewProps {
+  results: ScrapingResult[];
+  isLoading: boolean;
+}
 
-  if (isLoadingResults) {
+export function ScrapingResultsView({ results, isLoading }: ScrapingResultsViewProps) {
+  const { isLoading: isScraping } = useScraping();
+
+  if (isLoading || isScraping) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
@@ -191,7 +211,7 @@ export function ScrapingResultsView() {
     );
   }
 
-  if (!results?.results?.length) {
+  if (!results?.length) {
     return null;
   }
 
@@ -213,33 +233,16 @@ export function ScrapingResultsView() {
             </TabsList>
 
             <TabsContent value="summary" className="p-6 pt-4">
-              <ResultsSummary results={results?.results} />
+              <ResultsSummary results={results} />
             </TabsContent>
 
-            <TabsContent value="detailed" className="border-0 p-0">
-              <div className="px-6 py-4">
-                <div className="flex justify-end mb-4">
-                  <Button 
-                    variant="outline"
-                    onClick={() => {
-                      if (results?.results && results.results.length > 0) {
-                        const csv = resultsToCSV(results.results);
-                        downloadCSV(csv, "all-scraping-results.csv");
-                      }
-                    }}
-                    disabled={!results?.results || results.results.length === 0}
-                  >
-                    <FileDown className="h-4 w-4 mr-2" />
-                    Export All Results
-                  </Button>
+            <TabsContent value="detailed" className="p-0">
+              <div className="p-6">
+                <div className="space-y-4">
+                  {results.map((result: ScrapingResult, index: number) => (
+                    <ResultsTable key={index} result={result} />
+                  ))}
                 </div>
-                <ScrollArea className="h-[calc(100vh-300px)] min-h-[400px] pr-4">
-                  <div className="space-y-4">
-                    {results?.results?.map((result, index) => (
-                      <ResultsTable key={index} result={result} />
-                    ))}
-                  </div>
-                </ScrollArea>
               </div>
             </TabsContent>
           </Tabs>

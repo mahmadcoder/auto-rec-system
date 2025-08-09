@@ -1,4 +1,60 @@
 import { Subscription, SubscriptionPackage } from "@/types/subscription";
+import { LoginRequest, RegisterRequest, AuthResponse, ApiError, User } from "@/types/auth";
+
+// Authentication API
+export const auth = {
+  async login(credentials: LoginRequest): Promise<AuthResponse> {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Login failed');
+    }
+
+    return response.json();
+  },
+
+  async register(userData: RegisterRequest): Promise<User> {
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Registration failed');
+    }
+
+    return response.json();
+  },
+
+  async getCurrentUser(): Promise<User | null> {
+    const response = await fetch('/api/auth/me');
+    
+    if (!response.ok) {
+      if (response.status === 401) {
+        return null;
+      }
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Failed to fetch user');
+    }
+
+    return response.json();
+  },
+
+  async logout(): Promise<void> {
+    await fetch('/api/auth/logout', { method: 'POST' });
+  },
+};
 
 export const subscriptions = {
   async getPackages(): Promise<SubscriptionPackage[]> {
@@ -36,5 +92,22 @@ export const subscriptions = {
   async getCurrentSubscription(): Promise<Subscription | null> {
     // TODO: Implement actual API call
     return null;
+  },
+  
+  async subscribe(packageId: string): Promise<{ success: boolean; message?: string }> {
+    const response = await fetch('/api/subscriptions/subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ packageId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to subscribe');
+    }
+
+    return response.json();
   }
-}; 
+};

@@ -5,7 +5,6 @@ import {
   Moon,
   SunMedium,
   UserPlus,
-  type Icon as LucideIcon,
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { IconType } from "react-icons";

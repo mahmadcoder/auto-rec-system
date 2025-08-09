@@ -9,7 +9,7 @@ export type WebsiteStatus =
 export interface Website {
   id: string;
   url: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
+  status: WebsiteStatus;
   createdAt: string;
   updatedAt: string;
 }
@@ -32,10 +32,13 @@ export interface ScrapingRequest {
   concurrent_sites?: number;
 }
 
+// Define a more specific type for error details
+type ErrorDetails = Record<string, unknown> | string | null | undefined;
+
 export interface ScrapingError {
   message: string;
   code?: string;
-  details?: any;
+  details?: ErrorDetails;
 }
 
 export interface WebSocketMessage {
@@ -57,7 +60,7 @@ export interface WebSocketMessage {
 export interface ScrapingResult {
   id: string;
   websiteId: string;
-  data: any;
+  data: Record<string, unknown>;
   createdAt: string;
   status: 'success' | 'error';
   error?: string;

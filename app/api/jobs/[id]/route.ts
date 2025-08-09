@@ -7,25 +7,25 @@ const prisma = new PrismaClient();
 // GET a specific job by ID
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // For now, we'll use a simple authentication check
     // In a real app, you would use proper authentication
-    const authHeader = req.headers.get('authorization');
-    
+    const authHeader = req.headers.get("authorization");
+
     if (!authHeader) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     // Extract user ID from auth header or cookie
     // This is a simplified example - in a real app, you would decode a JWT token
     const userId = 1; // Placeholder user ID
 
     // Properly access the id parameter from context
-    const { id } = context.params;
+    const { id } = await params;
     const jobId = parseInt(id);
-    
+
     if (isNaN(jobId)) {
       return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
     }
@@ -45,35 +45,32 @@ export async function GET(
     return NextResponse.json(job);
   } catch (error) {
     console.error("Error fetching job:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch job" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch job" }, { status: 500 });
   }
 }
 
 // PUT update a job
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // For now, we'll use a simple authentication check
     // In a real app, you would use proper authentication
-    const authHeader = req.headers.get('authorization');
-    
+    const authHeader = req.headers.get("authorization");
+
     if (!authHeader) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     // Extract user ID from auth header or cookie
     // This is a simplified example - in a real app, you would decode a JWT token
     const userId = 1; // Placeholder user ID
 
     // Properly access the id parameter from context
-    const { id } = context.params;
+    const { id } = await params;
     const jobId = parseInt(id);
-    
+
     if (isNaN(jobId)) {
       return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
     }
@@ -91,11 +88,13 @@ export async function PUT(
     }
 
     const data = await req.json();
-    
+
     // Process requiredSkills to ensure it's an array
     let requiredSkills = data.requiredSkills;
-    if (typeof requiredSkills === 'string') {
-      requiredSkills = requiredSkills.split(',').map((skill: string) => skill.trim());
+    if (typeof requiredSkills === "string") {
+      requiredSkills = requiredSkills
+        .split(",")
+        .map((skill: string) => skill.trim());
     }
 
     // Update job
@@ -134,25 +133,25 @@ export async function PUT(
 // DELETE a job
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // For now, we'll use a simple authentication check
     // In a real app, you would use proper authentication
-    const authHeader = req.headers.get('authorization');
-    
+    const authHeader = req.headers.get("authorization");
+
     if (!authHeader) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     // Extract user ID from auth header or cookie
     // This is a simplified example - in a real app, you would decode a JWT token
     const userId = 1; // Placeholder user ID
 
     // Properly access the id parameter from context
-    const { id } = context.params;
+    const { id } = await params;
     const jobId = parseInt(id);
-    
+
     if (isNaN(jobId)) {
       return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
     }

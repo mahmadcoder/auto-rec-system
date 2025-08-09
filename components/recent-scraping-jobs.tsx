@@ -1,58 +1,27 @@
 "use client";
 
-import { useScrapingContext } from "@/contexts/scraping-context";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import {
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  Loader2,
-  PlayCircle,
-  PauseCircle,
-  StopCircle,
-  RefreshCcw,
-  Trash2,
-  ExternalLink,
-  FileText,
-  LucideIcon,
-} from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { useEffect, useState } from "react";
+import { useScraping } from "@/contexts/scraping-context";
+import { toast } from "@/components/ui/use-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "./ui/button";
-import { toast } from "./ui/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { useState, useEffect, useCallback } from "react";
-import { ResultsDialog } from "@/components/results-dialog";
-import type { Website, ScrapingJob, WebsiteStatus as WebsiteStatusType } from "@/types/api";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, Clock, PlayCircle, PauseCircle, StopCircle, RefreshCw as RefreshCcw, Trash2, CheckCircle2, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { Website, ScrapingJob } from "@/types/api";
 
-interface RecentScrapingJobsProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+type RecentScrapingJobsProps = React.HTMLAttributes<HTMLDivElement>;
 
 interface StatusConfig {
-  icon: LucideIcon;
+  icon: React.ComponentType<{ className?: string }>;
   color: string;
   bgColor: string;
   borderColor: string;
 }
 
-const getStatusConfig = (status: WebsiteStatusType): StatusConfig => {
+const getStatusConfig = (status: Website['status']): StatusConfig => {
   switch (status) {
     case "completed":
       return {
@@ -100,15 +69,19 @@ const getStatusConfig = (status: WebsiteStatusType): StatusConfig => {
 };
 
 function getProgressPercentage(website: Website, currentJob: ScrapingJob | null): number {
-  if (!currentJob || website.batchId !== currentJob.batch_id) return 0;
+  if (!currentJob) return 0;
   
-  const total = currentJob.total_sites;
-  const completed = currentJob.completed_sites;
+  const totalSites = currentJob.total_sites || 1;
+  const completedSites = currentJob.completed_sites || 0;
   
-  if (website.status === "completed") return 100;
-  if (website.status === "failed") return 0;
-  if (website.status === "scraping") return Math.round((completed / total) * 100);
-  return 0;
+  // Check if this website is being processed in the current job
+  const isActive = currentJob.active_sites?.includes(website.url) || false;
+  
+  if (isActive) {
+    return Math.min(99, Math.round((completedSites / totalSites) * 100));
+  }
+  
+  return Math.round((completedSites / totalSites) * 100);
 }
 
 interface WebsiteStatusProps {
@@ -150,13 +123,13 @@ function WebsiteStatus({ website, currentJob }: WebsiteStatusProps) {
           </div>
         )}
         <p className="text-xs text-muted-foreground mt-1">
-          {website.status === "completed" ? (
-            `Completed ${new Date(website.endTime!).toLocaleString()}`
+          {website.status === "completed" && website.updatedAt ? (
+            `Completed ${new Date(website.updatedAt).toLocaleString()}`
           ) : website.status === "scraping" ? (
             `In progress - ${progress}% complete`
-          ) : (
-            `Started ${new Date(website.startTime).toLocaleString()}`
-          )}
+          ) : website.createdAt ? (
+            `Started ${new Date(website.createdAt).toLocaleString()}`
+          ) : null}
         </p>
       </div>
     </div>
@@ -167,95 +140,65 @@ export function RecentScrapingJobs({
   className,
   ...props
 }: RecentScrapingJobsProps) {
-  const {
-    websites,
-    updateWebsiteStatus,
-    deleteWebsite,
-    results,
-    currentJob,
-    fetchResults,
-  } = useScrapingContext();
+  const { isLoading, currentJob } = useScraping();
+  
+  // Mock data - replace with actual data fetching logic
+  const [websites, setWebsites] = useState<Website[]>([]);
+  // Parse currentJob if it exists
+  const parsedJob = currentJob ? JSON.parse(currentJob) : null;
 
-  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
-
-  // Find result for selected URL
-  const selectedResult = results?.results?.find(
-    (result) => result.url === selectedUrl
-  ) || null;  // Convert undefined to null
-
-  // Track completion status using currentJob from WebSocket
-  const updateJobStatus = useCallback(
-    (website: any) => {
-      if (currentJob?.batch_id === website.batchId && currentJob) {
-        const newStatus = (() => {
-          if (
-            currentJob.failed_sites > 0 &&
-            currentJob.active_sites.includes(website.url)
-          ) {
-            return "failed";
-          } else if (currentJob.active_sites.includes(website.url)) {
-            return "scraping";
-          } else if (currentJob.completed_sites === currentJob.total_sites) {
-            return "completed";
-          } else if (
-            currentJob.pending_sites > 0 &&
-            !currentJob.active_sites.includes(website.url)
-          ) {
-            return "pending";
-          }
-          return website.status;
-        })();
-
-        if (newStatus !== website.status) {
-          updateWebsiteStatus(website.id, newStatus);
-          if (newStatus === "completed") {
-            fetchResults(website.batchId!);
-          }
-        }
-      }
-    },
-    [currentJob, updateWebsiteStatus, fetchResults]
-  );
-
-  // Update status whenever currentJob changes
+  // Update website status based on current job
   useEffect(() => {
-    if (currentJob) {
-      websites.forEach((website) => {
-        if (website.batchId === currentJob.batch_id) {
-          updateJobStatus(website);
-        }
-      });
+    if (parsedJob) {
+      setWebsites(prevWebsites => 
+        prevWebsites.map(website => {
+          // Check if this website is being processed in the current job
+          const isActive = parsedJob.active_sites?.includes(website.url);
+          if (isActive) {
+            return {
+              ...website,
+              status: 'scraping' as const,
+              updatedAt: parsedJob.start_time || website.updatedAt
+            };
+          }
+          return website;
+        })
+      );
     }
-  }, [currentJob?.batch_id, websites.length]); // Only depend on batch_id and websites length
+  }, [currentJob, parsedJob]); // Re-run when currentJob or parsedJob changes
 
   const handleJobAction = async (
     websiteId: string,
     action: "pause" | "resume" | "stop" | "retry" | "delete"
   ) => {
     try {
-      switch (action) {
-        case "pause":
-          await fetch(`/api/scraping/${websiteId}/pause`, { method: "POST" });
-          updateWebsiteStatus(websiteId, "paused");
-          break;
-        case "resume":
-          await fetch(`/api/scraping/${websiteId}/resume`, { method: "POST" });
-          updateWebsiteStatus(websiteId, "scraping");
-          break;
-        case "stop":
-          await fetch(`/api/scraping/${websiteId}/stop`, { method: "POST" });
-          updateWebsiteStatus(websiteId, "stopped");
-          break;
-        case "retry":
-          await fetch(`/api/scraping/${websiteId}/retry`, { method: "POST" });
-          updateWebsiteStatus(websiteId, "pending");
-          break;
-        case "delete":
-          await fetch(`/api/scraping/${websiteId}`, { method: "DELETE" });
-          deleteWebsite(websiteId);
-          break;
+      const response = await fetch(`/api/scraping/${websiteId}/${action}`, { 
+        method: "POST" 
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to ${action} scraping job`);
       }
+      
+      // Update local state
+      setWebsites(prevWebsites => 
+        prevWebsites.map(website => {
+          if (website.id === websiteId) {
+            let newStatus = website.status;
+            if (action === 'delete') return null; // Will be filtered out
+            if (action === 'pause') newStatus = 'paused';
+            if (action === 'resume') newStatus = 'scraping';
+            if (action === 'stop') newStatus = 'stopped';
+            if (action === 'retry') newStatus = 'pending';
+            
+            return { ...website, status: newStatus };
+          }
+          return website;
+        }).filter(Boolean) as Website[]
+      );
+      
     } catch (error) {
+      console.error(`Error ${action}ing job:`, error);
       toast({
         title: "Action Failed",
         description: `Failed to ${action} the scraping job.`,
@@ -264,7 +207,7 @@ export function RecentScrapingJobs({
     }
   };
 
-  const JobControls = ({ website }: { website: any }) => (
+  const JobControls = ({ website }: { website: Website }) => (
     <div className="flex items-center gap-2 pr-4">
       {website.status !== "completed" && website.status !== "failed" && (
         <>
@@ -342,52 +285,52 @@ export function RecentScrapingJobs({
   );
 
   return (
-    <>
-      <Card className={cn("overflow-hidden", className)} {...props}>
-        <CardHeader className="border-b bg-muted/30 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-xl font-semibold">
-                Recent Scraping Jobs
-              </CardTitle>
-              <CardDescription className="text-sm">
-                Manage and monitor your scraping activities
-              </CardDescription>
-            </div>
+    <Card className={cn("overflow-hidden", className)} {...props}>
+      <CardHeader className="border-b bg-muted/30 p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-xl font-semibold">
+              Recent Scraping Jobs
+            </CardTitle>
+            <CardDescription className="text-sm">
+              Manage and monitor your scraping activities
+            </CardDescription>
           </div>
-        </CardHeader>
-        <ScrollArea className="h-[400px]">
-          <CardContent className="p-0">
-            <div className="divide-y">
-              {websites.slice(0, 5).map((website) => (
-                <div
-                  key={website.id}
-                  className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
-                >
-                  <WebsiteStatus website={website} currentJob={currentJob} />
-                  <JobControls website={website} />
-                </div>
-              ))}
+        </div>
+      </CardHeader>
+      <ScrollArea className="h-[400px]">
+        <CardContent className="p-0">
+          <div className="divide-y">
+            {isLoading ? (
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <>
+                {websites.slice(0, 5).map((website) => (
+                  <div
+                    key={website.id}
+                    className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                  >
+                    <WebsiteStatus website={website} currentJob={parsedJob} />
+                    <JobControls website={website} />
+                  </div>
+                ))}
 
-              {websites.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-                  <Clock className="h-12 w-12 mb-4 opacity-50" />
-                  <p className="text-sm font-medium">No recent scraping jobs</p>
-                  <p className="text-xs mt-1">
-                    Start a new scraping job to see it here
-                  </p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </ScrollArea>
-      </Card>
-
-      <ResultsDialog
-        result={selectedResult}
-        isOpen={!!selectedUrl}
-        onClose={() => setSelectedUrl(null)}
-      />
-    </>
+                {websites.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+                    <Clock className="h-12 w-12 mb-4 opacity-50" />
+                    <p className="text-sm font-medium">No recent scraping jobs</p>
+                    <p className="text-xs mt-1">
+                      Start a new scraping job to see it here
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </CardContent>
+      </ScrollArea>
+    </Card>
   );
 }

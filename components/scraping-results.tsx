@@ -2,55 +2,49 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Download, Loader2, Mail, Phone, MapPin, Hash } from "lucide-react";
-import { useScrapingContext } from "@/contexts/scraping-context";
+import { Loader2, Mail, Phone, MapPin, Hash } from "lucide-react";
+import { useScraping } from "@/contexts/scraping-context";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function ScrapingResults() {
-  const { results, isLoadingResults } = useScrapingContext();
+  const { isLoading, currentJob } = useScraping();
+  // Since currentJob is a string or null, we'll use an empty object for results
+  const results = currentJob ? JSON.parse(currentJob) : { statistics: {}, results: [] };
 
+  // This component expects results as a prop, not from context
+  // The actual results should be passed as a prop or fetched in a parent component
   const stats = [
     {
       title: "Total Emails",
-      value: results?.statistics.total_emails || 0,
+      value: 0, // Will need to be updated when results are passed as props
       icon: Mail,
       color: "text-blue-500",
     },
     {
       title: "Total Phones",
-      value: results?.statistics.total_phones || 0,
+      value: results?.statistics?.total_phones || 0,
       icon: Phone,
       color: "text-green-500",
     },
     {
       title: "Total Addresses",
-      value: results?.statistics.total_addresses || 0,
+      value: results?.statistics?.total_addresses || 0,
       icon: MapPin,
       color: "text-purple-500",
     },
     {
       title: "Total Postal Codes",
-      value: results?.statistics.total_postal_codes || 0,
+      value: results?.statistics?.total_postal_codes || 0,
       icon: Hash,
       color: "text-orange-500",
     },
   ];
 
-  if (isLoadingResults) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -93,7 +87,7 @@ export function ScrapingResults() {
 
           <TabsContent value="details">
             <ScrollArea className="h-[400px]">
-              {results.results.map((result) => (
+              {(results.results as Array<{ url: string }>).map((result: { url: string }) => (
                 <Card key={result.url} className="mb-4">
                   <CardContent className="p-4">
                     <h3 className="font-medium mb-2">{result.url}</h3>

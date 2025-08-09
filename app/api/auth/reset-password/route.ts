@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
@@ -69,7 +68,7 @@ export async function POST(req: NextRequest) {
     
     // Update user password and clear reset token
     await prisma.user.update({
-      where: { id: user.id },
+      where: { id: Number(user.id) }, // Convert string ID to number for Prisma
       data: { 
         password: hashedPassword,
         resetToken: null,
@@ -81,7 +80,7 @@ export async function POST(req: NextRequest) {
     await prisma.$executeRaw`
       UPDATE users 
       SET "otp" = NULL, "otpExpiry" = NULL 
-      WHERE id = ${user.id}
+      WHERE id = ${Number(user.id)}
     `;
     
     return NextResponse.json({

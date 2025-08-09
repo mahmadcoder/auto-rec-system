@@ -3,10 +3,23 @@
 import type React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from "recharts"
+import { 
+  ResponsiveContainer, 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  PieChart, 
+  Pie, 
+  Cell, 
+  TooltipProps
+} from 'recharts'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { Calendar, Download, TrendingUp } from "lucide-react"
+import { Calendar, Download } from "lucide-react"
 
 const dataTypeStats = [
   { name: "Emails", count: 150, growth: 12 },
@@ -28,15 +41,23 @@ const successRateData = [
 
 const COLORS = ['#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#6366f1']
 
-interface ScrapingAnalyticsProps extends React.HTMLAttributes<HTMLDivElement> {}
+export function ScrapingAnalytics({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  interface CustomTooltipProps extends TooltipProps<number, string> {
+    active?: boolean;
+    payload?: Array<{
+      value: number;
+      name: string;
+      color: string;
+    }>;
+    label?: string;
+  }
 
-export function ScrapingAnalytics({ className, ...props }: ScrapingAnalyticsProps) {
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-background/95 backdrop-blur-sm border rounded-lg p-3 shadow-lg">
           <p className="font-medium">{label}</p>
-          {payload.map((item: any, index: number) => (
+          {payload.map((item, index) => (
             <p key={index} className="text-sm" style={{ color: item.color }}>
               {item.name}: {item.value}
             </p>
@@ -84,7 +105,7 @@ export function ScrapingAnalytics({ className, ...props }: ScrapingAnalyticsProp
 
           <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {dataTypeStats.map((stat, index) => (
+              {dataTypeStats.map((stat) => (
                 <Card key={stat.name}>
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
